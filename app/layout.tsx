@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
-import { HelveticaNeue } from "next/font/google"
+import HelveticaNeue from "next/font/local"
 import "./globals.css";
 import Navbar from "./Navbar"
 
@@ -9,6 +9,22 @@ const dm_sans = DM_Sans({
   variable: "--font-dm-sans",
   weight: ["400", "500", "600", "700"],
 });
+
+const helvetica_neue = HelveticaNeue({
+  src: [
+    {
+      path: '../public/fonts/HelveticaNeueMedium.otf',
+      weight: '500',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/HelveticaNeueBold.otf',
+      weight: '700',
+      style: 'normal',
+    },
+  ],
+  variable: '--font-helvetica-neue'
+})
 
 export const metadata: Metadata = {
   title: "Brian Liu",
@@ -26,7 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${dm_sans.variable} bg-white text-neutral-900 antialiased`}
+        className={`${dm_sans.variable} ${helvetica_neue.variable} bg-white text-neutral-900 antialiased`}
       >
         <div className="flex h-screen flex-col">
           <Navbar />

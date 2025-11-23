@@ -8,11 +8,11 @@ export default function Navbar() {
     ];
 
     return (
-        <header className="flex items-center justify-between px-6 py-6 text-sm tracking-tight md:px-12">
-            <Link href="#" className="text-base font-bold text-neutral-900">
+        <header className="flex items-center justify-between px-6 py-6 text-2xl font-helvetica-neue tracking-tight md:px-12">
+            <Link href="#" className="font-bold text-neutral-900">
                 Home
             </Link>
-            <nav className="flex items-center gap-8 text-base font-bold text-neutral-900">
+            <nav className="flex items-center gap-8 font-bold text-neutral-900">
                 {navLinks.map((link) => (
                     <Link
                         key={link.label}
