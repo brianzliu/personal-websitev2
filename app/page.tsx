@@ -5,25 +5,41 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex flex-row justify-center px-6 py-6">
-      <div className="w-1/2 space-y-6 text-neutral-700">
-        <h1 className="text-4xl tracking-tight text-neutral-900">
-          Brian Liu
-        </h1>
-        <div className="space-y-3 text-lg leading-7">
-          <p>2nd year data science student at ucsd</p>
-          <p>research intern at rare ai lab</p>
-          <p>development engineering intern at asakana</p>
+    <main className="flex min-h-[calc(100vh-80px)] flex-row items-center justify-between px-12 py-12">
+      <div className="flex flex-col justify-between w-1/2 h-[800px] border"> {/*border*/}
+        <div className="space-y-2">
+          <p className="text-[64px] font-medium tracking-[-0.04em] text-neutral-900">
+            Hi there! I’m
+          </p>
+          <h1 className="text-8xl font-semibold tracking-[-0.05em] text-neutral-900">
+            Brian Liu.
+          </h1>
+        </div>
+
+        <div className="space-y-2">
+          <p className="text-[64px] font-medium tracking-tight text-neutral-900">
+            I love tinkering with
+          </p>
+          <h2 className="text-8xl font-semibold tracking-tighter text-neutral-900">
+            data, software,
+            <br />& research
+          </h2>
+          <p className="pt-2 text-[64px] font-medium tracking-tight text-neutral-900">
+            as a data science student
+            <br />
+            <span className="flex items-center gap-2">
+              @ UCSD ☀️
+            </span>
+          </p>
         </div>
       </div>
 
-      <div className="w-1/2 mx-auto overflow-hidden">
+      <div className="relative h-[800px] w-[500px] overflow-hidden border">  {/*border*/}
         <Image
           src="/me.png"
-          alt="photo of brian"
-          width={288}
-          height={320}
-          className="h-auto w-full object-cover"
+          alt="Brian Liu"
+          fill
+          className="object-cover"
           priority
         />
       </div>
