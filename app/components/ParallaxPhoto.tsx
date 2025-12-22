@@ -5,7 +5,7 @@ import * as THREE from 'three';
 
 const IMAGE_URL = '/me.png';
 const DEPTH_URL = '/me_depth.png';
-const PARALLAX_INTENSITY = 0.03;
+const PARALLAX_INTENSITY = 0.01;
 const DITHER_SCALE = 4.0;
 
 const ParallaxPhoto: React.FC = () => {

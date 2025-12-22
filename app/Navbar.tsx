@@ -19,7 +19,14 @@ export default function Navbar() {
                         href={link.href}
                         className="transition-colors hover:text-neutral-600"
                     >
-                        {link.label}
+                        {link.label === 'Cool Stuff' ? (
+                            <>
+                                {link.label}{' '}
+                                <span className="text-sm font-bold">(Coming Soon!)</span>
+                            </>
+                        ) : (
+                            link.label
+                        )}
                     </Link>
                 ))}
             </nav>
