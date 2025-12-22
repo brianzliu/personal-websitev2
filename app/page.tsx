@@ -1,6 +1,4 @@
-import Image from "next/image";
-
-
+import ParallaxPhoto from "./components/ParallaxPhoto";
 
 export default function Home() {
   return (
@@ -20,7 +18,7 @@ export default function Home() {
             I love tinkering with
           </p>
           <h2 className="text-8xl font-helvetica-neue font-medium tracking-tighter text-neutral-900">
-            data,<br/>software,
+            data,<br />software,
             <br />& research
           </h2>
           <div className="flex flex-col w-fit"> {/*border*/}
@@ -40,13 +38,7 @@ export default function Home() {
       </div>
 
       <div className="relative h-[800px] w-4/10 overflow-hidden">  {/*border*/}
-        <Image
-          src="/me_new.png"
-          alt="Brian Liu"
-          fill
-          className="object-cover"
-          priority
-        />
+        <ParallaxPhoto />
       </div>
     </main>
   );
