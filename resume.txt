@@ -1,0 +1,78 @@
+BRIAN ZHOU LIU
+25349 Pembroke Ave, Little Neck, NY 11362 | (347) 957-9298 | brianliu0317@gmail.com 
+https://www.linkedin.com/in/brianzliu/ 
+
+EDUCATION
+
+University of California, San Diego						        		       La Jolla, California
+HALICIOĞLU DATA SCIENCE INSTITUTE	Anticipated Graduation: June 2027
+Candidate for Bachelor of Science in Data Science	GPA: 3.97/4.00
+Concentration: Machine Learning and Artificial Intelligence
+Coursework: Linear Algebra, Vector Calculus, Data Structures and Algorithms for Data Science
+
+RESEARCH EXPERIENCE 
+
+RARE AI LAB, UC SAN DIEGO	La Jolla, California
+Research Intern under Prof. Aobo Li	September 2024 – Present
+•	Benchmarked a range of machine learning architectures-—including vision transformers, standard 2D convolutions, graph-based spherical ConvNet (DeepSphere), and 3D convolutional autoencoders—against KamNet for neutrinoless double beta decay detection, leveraging spatial and temporal patterns in the design of the neutrino detector. Evaluated background rejection accuracy and tuned hyperparameters to identify optimize models’ efficacy.
+•	Applied the RESuM surrogate modeling framework to simulation data for the COH-Ar-750 detector, enabling quantitative analysis of optimal shielding parameter configurations. Used an efficient multi-fidelity approach—combining a conditional neural process and Gaussian process—to assess neutron background rates and demonstrated that increased water shielding with thinner veto panels yields improved performance, while significantly reducing the need for computationally expensive high-fidelity Monte Carlo simulations. 
+“Efficient optimization of COHERENT detector design parameters with the Rare Event Surrogate Model RESUM),” submitted to Machine Learning and the Physical Sciences, NeurIPS 2025. (Link to Pre-Camera-Ready Workshop Paper)
+
+MAIX LAB, EMORY UNIVERSITY 	Atlanta, Georgia
+Research Intern under Prof. Ran Xiao	March 2023 – November 2023
+•	Evaluated 10 data compression methods using XResNet to improve heart attack diagnostics, identifying the 12-lead format for optimal performance and autoencoder for computational efficiency. Investigated orthogonal leads, vectorcardiogram (VCG), three different PCA variations, three different median beat variations, autoencoder, and binary convolutional autoencoder (BCAE)—comparing performance metrics (AUC, sensitivity, precision) against processing time. Though 12-lead format achieved highest AUC (0.926) with strong sensitivity (0.775), autoencoder demonstrated best performance-efficiency ratio (0.339), though requiring accuracy improvements for clinical deployment. (Link to Manuscript)
+•	Constructed anatomically informed feature tensor for XResNet, resulting in significant (p<0.001) AUC increase to 93.7%. Developed regional learners for inferior, septal, anterior, and lateral ECG leads combined with a global learner using 1D convolutional layers to capture cross-lead spatial patterns—stacking features into 100-dimensional space improved myocardial infarction detection over baseline model (91.4% AUC) while achieving strong sensitivity (85.5%) and specificity (86.7%). Zègre-Hemsey, J. K., Ding, C., Liu, B., Wright, D. W., Al-Zaiti, S., Hu, X., & Xiao, R. Enhancing Deep Learning in Detecting Acute Myocardial Infarction via Anatomically Informed 12-Lead ECG. (Link to Conference Abstract)
+
+PROJECTS 
+¬¬
+CARP: AI-POWERED FISHERMEN HEALTH MONITORING AND CATCH OPTIMIZATION	Stanford, California
+Sushi Hackathon at Stanford University	October 2025
+•	Engineered a dual-purpose carpal tunnel syndrome (CTS) wearable diagnostic brace using an Arduino Nano, dual load cells for grip strength, and force-sensitive resistors (FSRs) for pinch strength.
+•	Developed a Python-based Bluetooth API to wirelessly transmit sensor data from the Arduino brace to a central application for real-time health analysis and CTS severity prediction.
+•	Contributed to a full-stack dashboard featuring an AI agent with RAG for market insights, a health module to track CTS risk using the brace's data, and visualizations of a 50,000+ point dataset for optimal fish locations.
+
+BOUNCER: MALICIOUS ACTOR PREVENTION SYSTEM	San Francisco, California
+Berkeley AI Hackathon	June 2025
+•	Integrated Google Custom Search JSON API and Gemini Flash 2.0 to search public records from user sign-up data.
+•	Engineered a user risk prediction system with Claude Sonnet 4 to generate 0–100 risk scores and detailed model explanations for transparent, unbiased assessments.
+Created dashboard with React and Supabase, providing email notifications for high-risk users and full model evaluations.
+
+CITETRACE: RESEARCH KNOWLEDGE GRAPH FOR INSIGHT DISCOVERY	Santa Clara, California
+ACM x Intel Hackathon	May 2025
+•	Developed an interactive knowledge graph that visually organizes academic works and their relationships, enabling intuitive exploration of research connections and semantic differences between papers.
+•	Implemented a full retrieval-augmented generation (RAG) system with an AI research agent, allowing users to query uploaded scientific literature and retrieve relevant information with cited sources.
+•	Designed and optimized a user-friendly interface with D3 graph visualizations for aesthetic and performant representation of research paper connections, alongside an integrated note-taking feature for synthesizing insights.
+
+PILLSNAP: AI-POWERED PILL IDENTIFIER AND DRUG INTERACTION WARNING SYSTEM 	La Jolla, California
+UCSD DiamondHacks	April 2025
+•	Engineered a prediction module fusing Gemini-generated descriptions with FDA database API to identify probable drugs.
+•	Fine-tuned Gemini Flash 2.0 with Vertex AI to produce reliable, regulated pill descriptions given a prompt schema.
+•	Deployed full-stack app by hosting front-end on Vercel and backend API on Google Cloud Run, under custom domain.
+
+LOW-COST HEADWEAR APPARATUS FOR BLIND NAVIGATION ASSISTANCE	Great Neck, New York
+High School Research	September 2022 – February 2023
+•	Collaborated in 3-person team to develop low-cost assistive computer vision system for legally blind individuals using YOLOv4-tiny neural network, achieving 87.34% mean average precision.
+•	Engineered headwear apparatus integrating Raspberry Pi 4B, reducing costs by over 90% from commercial alternatives.
+•	Designed and implemented real-time audio feedback system using Python, OpenCV, and PyGame for providing navigation assistance.
+
+PROFESSIONAL EXPERIENCE 
+
+ASAKANA	Remote
+Product Development Intern	October 2025 – Present
+•	Engineer an OCR bulk upload feature with Gemini Flash Lite, allowing suppliers to upload thousands of unstructured product sheets (PDFs, Excel, etc.) to be sorted into the Asakana MongoDB database.
+•	Conceptualize and develop a DialogflowCX agent to automatically process buyer orders (via identifying the buyer, implementing buyer-specific pricing policies, and propagating orders to the supplier) using the Asakana Cloud SQL database and SMS (Twilio)
+•	Conduct direct market research with industry insiders, translating key insights from interviews and shadowing into actionable product improvements for Asakana.
+
+ACCOLADES
+¬¬
+•	3rd Place, Sushi Hackathon at Stanford University	       2025	
+•	1st Place, ACM x Intel Hackathon	       2025
+•	Most Technical Project, Innovate 4 SDSU Hackathon	       2025
+•	MLH: Best Use of Auth0, DiamondHacks	       2025
+•	Regeneron STS Top 300 Scholar	       2024
+•	1st Place, Journal of Young Explorers Meta  	       2022	       
+
+SKILLS & INTERESTS 
+¬¬
+Proficiency in: Python, PyTorch, TensorFlow, NumPy, scikit-learn, high-performance computing 
+Interests: Nature language processing, world models, AI safety, building a startup, cat videos, admiring pretty sunsets

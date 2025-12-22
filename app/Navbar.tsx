@@ -2,14 +2,14 @@ import Link from 'next/link';
 
 export default function Navbar() {
     const navLinks = [
-        { href: "#resume", label: "Resume" },
+        { href: "/resume", label: "Resume" },
         { href: "#projects", label: "Projects" },
         { href: "#cool-stuff", label: "Cool Stuff" },
     ];
 
     return (
-        <header className="flex items-center justify-between px-6 py-6 text-2xl font-helvetica-neue tracking-tight md:px-48">
-            <Link href="#" className="font-bold text-neutral-900">
+        <header className="flex items-center justify-between px-6 py-6 text-2xl font-helvetica-neue tracking-tight md:px-24 lg:px-48 xl:px-72 2xl:px-96">
+            <Link href="/" className="font-bold text-neutral-900 pr-24">
                 Home
             </Link>
             <nav className="flex items-center gap-46 font-bold text-neutral-900">

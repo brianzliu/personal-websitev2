@@ -6,7 +6,7 @@ import * as THREE from 'three';
 const IMAGE_URL = '/me.png';
 const DEPTH_URL = '/me_depth.png';
 const PARALLAX_INTENSITY = 0.01;
-const DITHER_SCALE = 4.0;
+const DITHER_SCALE = 3.5;
 
 const ParallaxPhoto: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -88,15 +88,17 @@ const ParallaxPhoto: React.FC = () => {
                 }
 
                 void main() {
-                    float zoom = 0.9;
+                    float zoom = 0.6; 
 
-                    // Aspect Ratio Correction (Cover)
+                    // Aspect Ratio Correction (Contain)
                     vec2 s = uResolution;
                     vec2 i = uImageSize;
                     float rs = s.x / s.y;
                     float ri = i.x / i.y;
-                    vec2 newUv = (vUv - 0.5) * vec2(min(rs/ri, 1.0), min(ri/rs, 1.0)) * zoom + 0.5;
-
+                    
+                    // Standard contain:
+                    vec2 newUv = (vUv - 0.5) * vec2(max(rs/ri, 1.0), max(ri/rs, 1.0)) * zoom + 0.5;
+                    
                     // Parallax
                     float depth = texture2D(uDepthMap, newUv).r;
                     vec2 parallaxUv = newUv - (uMouse * depth * uIntensity);
