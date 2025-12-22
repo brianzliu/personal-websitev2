@@ -4,8 +4,8 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="flex min-h-[calc(100vh-80px)] flex-row items-center justify-between px-12 py-12 gap-6">
-      <div className="flex flex-col justify-between w-1/2 h-[800px] border"> {/*border*/}
+    <main className="flex min-h-[calc(100vh-80px)] flex-row items-center justify-between px-48 py-12">
+      <div className="flex flex-col justify-between w-1/2 h-[800px]"> {/*border*/}
         <div className="space-y-2">
           <p className="text-[64px] font-sans font-medium tracking-[-0.07em] text-neutral-900">
             Hi there! I’m
@@ -20,10 +20,10 @@ export default function Home() {
             I love tinkering with
           </p>
           <h2 className="text-8xl font-helvetica-neue font-medium tracking-tighter text-neutral-900">
-            data, software,
+            data,<br/>software,
             <br />& research
           </h2>
-          <div className="flex flex-col border w-fit">
+          <div className="flex flex-col w-fit"> {/*border*/}
             <p className="pt-2 text-[64px] font-sans font-medium tracking-[-0.07em] leading-[0.50em] text-neutral-900">
               as a data science student
             </p>
@@ -39,9 +39,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="relative h-[800px] w-4/10 overflow-hidden border">  {/*border*/}
+      <div className="relative h-[800px] w-4/10 overflow-hidden">  {/*border*/}
         <Image
-          src="/me.png"
+          src="/me_new.png"
           alt="Brian Liu"
           fill
           className="object-cover"
