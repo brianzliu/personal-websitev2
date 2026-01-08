@@ -3,7 +3,7 @@ import ParallaxPhoto from "./components/ParallaxPhoto";
 export default function Home() {
   return (
     <div className="flex flex-col ">
-      <main className="flex min-h-[calc(100vh-80px)] flex-col items-center justify-between px-6 py-12 2xl:flex-row md:px-24 lg:px-48 xl:px-72 2xl:px-96">
+      <main className="flex min-h-[calc(100vh-80px)] max-w-7xl mx-auto w-full flex-col items-center justify-between px-6 py-12 2xl:flex-row">
         <div className="flex h-auto flex-col justify-between space-y-12 2xl:h-[800px] 2xl:space-y-0 pr-12"> {/*border*/}
           <div className="space-y-2">
             <p className="text-4xl font-sans font-medium tracking-[-0.07em] text-neutral-900 md:text-5xl lg:text-[64px]">
@@ -38,7 +38,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="relative mt-12 h-[400px] w-full shrink-0 overflow-hidden 2xl:mt-0 2xl:h-[800px] 2xl:w-[500px]">  {/*border*/}
+        <div className="hidden 2xl:block relative mt-12 h-[400px] w-full shrink-0 overflow-hidden 2xl:mt-0 2xl:h-[800px] 2xl:w-[500px]">  
           <ParallaxPhoto />
         </div>
       </main>

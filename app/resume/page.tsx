@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function ResumePage() {
     return (
-        <main className="w-full px-6 py-12 md:py-24 md:px-24 lg:px-48 xl:px-72 2xl:px-96">
+        <main className="w-full max-w-4xl mx-auto px-6 py-12 md:py-24">
             <div className="flex flex-col space-y-12 md:space-y-16">
                 {/* Header */}
                 <div className="flex flex-col items-start justify-between border-b border-neutral-200 pb-8 md:flex-row md:items-end">
