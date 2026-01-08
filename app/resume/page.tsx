@@ -39,7 +39,7 @@ export default function ResumePage() {
                     </div>
                     <div className="flex w-full flex-col space-y-12 md:w-2/3">
                         <div className="flex flex-col space-y-2">
-                            <div className="flex flex-col justify-between md:flex-row">
+                            <div className="flex flex-col justify-between md:flex-row gap-2">
                                 <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
                                     University of California, San Diego
                                 </h4>
@@ -69,7 +69,7 @@ export default function ResumePage() {
                         {/* Asakana */}
                         <div className="flex flex-col space-y-2">
                             <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
+                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl gap-2">
                                     Asakana
                                 </h4>
                                 <span className="font-sans text-neutral-500">Oct 2025 — Present</span>
@@ -95,10 +95,10 @@ export default function ResumePage() {
                         {/* Rare AI Lab */}
                         <div className="flex flex-col space-y-2">
                             <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
+                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl gap-2">
                                     Rare AI Lab, UC San Diego
                                 </h4>
-                                <span className="font-sans text-neutral-500">Sep 2024 — Present</span>
+                                <span className="font-sans text-neutral-500">Sep 2024 — Dec 2025</span>
                             </div>
                             <p className="font-sans text-base italic text-neutral-600 md:text-lg">Research Intern under Prof. Aobo Li | La Jolla, CA</p>
                             <ul className="ml-5 list-outside list-disc space-y-2 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
@@ -111,8 +111,8 @@ export default function ResumePage() {
                         {/* Maix Lab */}
                         <div className="flex flex-col space-y-2">
                             <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
-                                    Maix Lab, Emory University
+                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl gap-2">
+                                    MAIX Lab, Emory University
                                 </h4>
                                 <span className="font-sans text-neutral-500">Mar 2023 — Nov 2023</span>
                             </div>
@@ -136,8 +136,8 @@ export default function ResumePage() {
                     <div className="flex w-full flex-col space-y-12 md:w-2/3">
                         {/* CARP */}
                         <div className="flex flex-col space-y-2">
-                            <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 uppercase md:text-xl">
+                            <div className="flex flex-col justify-between md:flex-row gap-2">
+                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
                                     CARP: AI-Powered Fishermen Health Monitoring
                                 </h4>
                                 <span className="font-sans text-neutral-500">Oct 2025</span>
@@ -152,8 +152,8 @@ export default function ResumePage() {
 
                         {/* Bouncer */}
                         <div className="flex flex-col space-y-2">
-                            <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 uppercase md:text-xl">
+                            <div className="flex flex-col justify-between md:flex-row gap-2">
+                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
                                     Bouncer: Malicious Actor Prevention System
                                 </h4>
                                 <span className="font-sans text-neutral-500">Jun 2025</span>
@@ -168,8 +168,8 @@ export default function ResumePage() {
 
                         {/* CiteTrace */}
                         <div className="flex flex-col space-y-2">
-                            <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 uppercase md:text-xl">
+                            <div className="flex flex-col justify-between md:flex-row gap-2">
+                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
                                     CiteTrace: Research Knowledge Graph
                                 </h4>
                                 <span className="font-sans text-neutral-500">May 2025</span>
@@ -184,8 +184,8 @@ export default function ResumePage() {
 
                         {/* PillSnap */}
                         <div className="flex flex-col space-y-2">
-                            <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 uppercase md:text-xl">
+                            <div className="flex flex-col justify-between md:flex-row gap-2">
+                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
                                     PillSnap: AI-Powered Pill Identifier
                                 </h4>
                                 <span className="font-sans text-neutral-500">Apr 2025</span>
@@ -200,8 +200,8 @@ export default function ResumePage() {
 
                         {/* Blind Navigation */}
                         <div className="flex flex-col space-y-2">
-                            <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 uppercase md:text-xl">
+                            <div className="flex flex-col justify-between md:flex-row gap-2">
+                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
                                     Low-Cost Blind Navigation Apparatus
                                 </h4>
                                 <span className="font-sans text-neutral-500">Sep 2022 - Feb 2023</span>
