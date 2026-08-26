@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 const IMAGE_URL = '/me.png';
@@ -12,11 +12,21 @@ const ParallaxPhoto: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
     const materialRef = useRef<THREE.ShaderMaterial | null>(null);
-    const mouseRef = useRef(new THREE.Vector2(0, 0));
     const targetMouseRef = useRef(new THREE.Vector2(0, 0));
+    const [shouldRender, setShouldRender] = useState(false);
 
     useEffect(() => {
-        if (!containerRef.current) return;
+        const mediaQuery = window.matchMedia('(orientation: landscape) and (min-width: 700px)');
+        const updateRenderState = () => setShouldRender(mediaQuery.matches);
+
+        updateRenderState();
+        mediaQuery.addEventListener('change', updateRenderState);
+
+        return () => mediaQuery.removeEventListener('change', updateRenderState);
+    }, []);
+
+    useEffect(() => {
+        if (!shouldRender || !containerRef.current) return;
 
         const container = containerRef.current;
         const width = container.clientWidth;
@@ -181,7 +191,7 @@ const ParallaxPhoto: React.FC = () => {
                 container.removeChild(renderer.domElement);
             }
         };
-    }, []);
+    }, [shouldRender]);
 
     return (
         <div ref={containerRef} className="w-full h-full bg-transparent overflow-hidden" />

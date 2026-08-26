@@ -28,3 +28,83 @@ a {
   color: inherit;
   text-decoration: none;
 }
+
+.home-hero {
+  display: flex;
+  min-height: calc(100svh - 88px);
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding: clamp(2rem, 6vh, 3rem) 1.5rem;
+}
+
+.home-hero__copy {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3rem;
+}
+
+.home-hero__eyebrow {
+  font-size: clamp(1.75rem, 8vw, 4rem);
+}
+
+.home-hero__heading {
+  font-size: clamp(3.25rem, 13vw, 6rem);
+  line-height: 0.92;
+}
+
+.home-hero__art {
+  display: none;
+}
+
+@media (orientation: landscape) and (min-width: 700px) {
+  .home-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(17rem, 40%);
+    align-items: stretch;
+    gap: clamp(1rem, 3vw, 3rem);
+    padding-block: clamp(1.5rem, 4vh, 3rem);
+  }
+
+  .home-hero__copy {
+    min-width: 0;
+    padding-right: 0;
+  }
+
+  .home-hero__eyebrow {
+    font-size: clamp(2rem, min(4.15vw, 6.6vh), 4rem);
+  }
+
+  .home-hero__heading {
+    font-size: clamp(3rem, min(6.25vw, 10vh), 6rem);
+  }
+
+  .home-hero__art {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: min(50rem, calc(100svh - 8.5rem));
+    min-height: 0;
+    align-self: center;
+    overflow: hidden;
+  }
+}
+
+@media (orientation: portrait) {
+  .home-hero {
+    max-width: 52rem;
+  }
+
+  .home-hero__copy {
+    justify-content: flex-start;
+    gap: clamp(3.5rem, 8vh, 6rem);
+  }
+}
+
+@media (orientation: portrait) and (max-width: 600px) {
+  .home-hero__student {
+    font-size: clamp(1.625rem, 6.4vw, 2.5rem);
+  }
+}
