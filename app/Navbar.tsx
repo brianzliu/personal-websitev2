@@ -8,8 +8,8 @@ export default function Navbar() {
 
     const navLinks = [
         { href: "/resume", label: "Resume" },
-        { href: "#projects", label: "Projects", comingSoon: true },
-        { href: "#cool-stuff", label: "Cool Stuff", comingSoon: true },
+        { href: "/projects", label: "Projects" },
+        { href: "/blog", label: "Blog" },
     ];
 
     return (
@@ -28,9 +28,6 @@ export default function Navbar() {
                             className="transition-colors hover:text-neutral-600"
                         >
                             {link.label}
-                            {link.comingSoon && (
-                                <span className="text-sm font-bold ml-1">(Coming Soon!)</span>
-                            )}
                         </Link>
                     ))}
                 </nav>
@@ -97,9 +94,6 @@ export default function Navbar() {
                                 className="text-neutral-900 hover:text-neutral-600 transition-colors"
                             >
                                 {link.label}
-                                {link.comingSoon && (
-                                    <span className="text-sm font-bold ml-2 text-neutral-500">(Coming Soon!)</span>
-                                )}
                             </Link>
                         ))}
                     </nav>

@@ -1,258 +1,118 @@
+import type { ReactNode } from "react";
 import Link from "next/link";
+
+function ResumeSection({ title, children }: { title: string; children: ReactNode }) {
+    return (
+        <details className="group border-b border-neutral-200" open>
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-6 [&::-webkit-details-marker]:hidden">
+                <h2 className="font-helvetica-neue text-2xl font-medium tracking-tight text-neutral-900 md:text-3xl">{title}</h2>
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-neutral-300 text-2xl leading-none transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span>
+            </summary>
+            <div className="pb-8 md:pb-10">{children}</div>
+        </details>
+    );
+}
+
+const experiences = [
+    {
+        organization: "Q-Lab, UC San Diego",
+        role: "Research Intern under Prof. Lianhui Qin",
+        location: "La Jolla, CA",
+        dates: "Jan 2026 - Present",
+        bullets: [
+            <>Co-developed SIGA, a Claude Code adapter that configures scientific simulators; built its ChromaDB retrieval layer, MCP XML validator, and plugin framework, and co-authored the <Link href="https://arxiv.org/abs/2606.09774" target="_blank" rel="noreferrer" className="underline decoration-neutral-300 underline-offset-4 hover:decoration-neutral-900">accompanying preprint</Link>.</>,
+            <>Led a 30-task OpenFOAM transfer study; SIGA&apos;s best configuration scored 0.870 accuracy with 30/30 complete cases.</>,
+            <>On harder held-out GEOS tasks, SIGA raised accuracy by 9.6% from 0.720 to 0.789 and reduced run-to-run standard deviation by about 16x.</>,
+            <>Developed a direct encoder-decoder Transformer to forecast four future single-cell states from 100,000 trajectories; achieved R² = 0.536 across 3,201 output genes and R² = 0.857 on the top 50 dynamic genes.</>,
+        ],
+    },
+    {
+        organization: "Asakana (YC F26)",
+        role: "Product Development Intern",
+        location: "Remote",
+        dates: "Oct 2025 - Feb 2026",
+        bullets: [
+            <>Deployed a first-generation OCR/ETL pipeline with Gemini Flash-Lite, automating previously manual supplier entry for 10,000+ products from PDF and Excel sheets into MongoDB.</>,
+            <>Developed a Dialogflow CX ordering agent backed by Cloud SQL and REST APIs, with Twilio SMS notifications and automated pricing-rule enforcement.</>,
+        ],
+    },
+    {
+        organization: "Rare AI Lab, UC San Diego",
+        role: "Research Intern under Prof. Aobo Li",
+        location: "La Jolla, CA",
+        dates: "Sep 2024 - Dec 2025",
+        bullets: [
+            <>Implemented a multi-fidelity surrogate optimizer combining conditional neural processes and Gaussian processes, reducing detector-simulation cost by 90% for experimental design exploration.</>,
+            <>Co-first-authored &quot;Efficient Optimization of COHERENT Detector Design Parameters with RESuM,&quot; accepted to the NeurIPS 2025 ML4PS Workshop.</>,
+        ],
+    },
+    {
+        organization: "MAIX Lab, Emory University",
+        role: "Research Intern and Regeneron STS Top 300 Scholar under Prof. Ran Xiao",
+        location: "Atlanta, GA",
+        dates: "Mar 2023 - Nov 2023",
+        bullets: [
+            <>Constructed an anatomically informed feature tensor for cardiac screening using XResNet, achieving 93.7% AUC.</>,
+            <>Boosted model sensitivity to 85.5% with 1D convolutional layers that capture cross-lead patterns.</>,
+        ],
+    },
+];
 
 export default function ResumePage() {
     return (
-        <main className="w-full max-w-7xl mx-auto px-6 py-12 md:py-24">
-            <div className="flex flex-col space-y-8 md:space-y-10">
-                {/* Header */}
-                <div className="flex flex-col items-start justify-between border-b border-neutral-200 pb-8 md:flex-row md:items-end">
+        <main className="mx-auto w-full max-w-7xl px-6 py-12 md:py-20">
+            <header className="flex flex-col items-start justify-between gap-8 border-b border-neutral-900 pb-10 md:flex-row md:items-end">
+                <div>
+                    <p className="mb-2 font-sans text-sm font-medium uppercase tracking-[0.18em] text-neutral-500">Résumé</p>
+                    <h1 className="font-helvetica-neue text-5xl font-medium tracking-tighter text-neutral-900 md:text-7xl">Brian Zhou Liu</h1>
+                    <p className="mt-4 max-w-2xl font-sans text-base leading-relaxed text-neutral-600 md:text-lg">
+                        New York, NY · <a href="mailto:brianliu0317@gmail.com" className="hover:underline">brianliu0317@gmail.com</a> · <Link href="https://www.linkedin.com/in/brianzliu/" target="_blank" rel="noreferrer" className="hover:underline">LinkedIn</Link> · <Link href="https://github.com/brianzliu" target="_blank" rel="noreferrer" className="hover:underline">GitHub</Link>
+                    </p>
+                </div>
+                <Link href="/resume.pdf" target="_blank" className="shrink-0 rounded-full border border-neutral-900 px-6 py-3 font-sans font-medium transition-colors hover:bg-neutral-900 hover:text-white">Download PDF ↗</Link>
+            </header>
+
+            <ResumeSection title="Education">
+                <div className="grid gap-2 md:grid-cols-[1fr_auto] md:gap-x-10">
                     <div>
-                        <h1 className="text-4xl font-helvetica-neue font-medium tracking-tighter text-neutral-900 md:text-6xl">
-                            Brian Zhou Liu
-                        </h1>
-                        <p className="mt-4 font-sans text-base text-neutral-500 md:text-lg">
-                            Little Neck, NY | (347) 957-9298 | <a href="mailto:brianliu0317@gmail.com" className="hover:underline">brianliu0317@gmail.com</a>
-                        </p>
-                        <Link
-                            href="https://www.linkedin.com/in/brianzliu/"
-                            target="_blank"
-                            className="mt-1 block font-sans text-base text-neutral-500 hover:text-neutral-900 hover:underline md:text-lg"
-                        >
-                            linkedin.com/in/brianzliu
-                        </Link>
+                        <h3 className="font-helvetica-neue text-xl font-medium md:text-2xl">University of California, San Diego</h3>
+                        <p className="mt-1 font-sans text-base text-neutral-600 md:text-lg">B.S. in Data Science, AI &amp; ML Specialization</p>
                     </div>
-                    <Link
-                        href="/resume.pdf"
-                        target="_blank"
-                        className="mt-6 flex items-center gap-2 rounded-full border border-neutral-200 px-6 py-3 font-sans font-medium transition-colors hover:bg-neutral-50 md:mt-0"
-                    >
-                        Download PDF ↗
-                    </Link>
-                </div>
-
-                {/* Education */}
-                <div className="flex flex-col space-y-4 md:flex-row md:space-x-12 md:space-y-0">
-                    <div className="w-full md:w-1/3">
-                        <h3 className="text-xl font-helvetica-neue font-medium text-neutral-500 md:text-2xl">
-                            Education
-                        </h3>
-                    </div>
-                    <div className="flex w-full flex-col space-y-6 md:w-2/3">
-                        <div className="flex flex-col space-y-1">
-                            <div className="flex flex-col justify-between md:flex-row gap-2">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
-                                    University of California, San Diego
-                                </h4>
-                                <span className="font-sans text-neutral-500">June 2027</span>
-                            </div>
-                            <div className="flex flex-col justify-between font-sans text-base text-neutral-600 md:flex-row md:text-lg">
-                                <span>Halıcıoğlu Data Science Institute</span>
-                                <span>La Jolla, CA</span>
-                            </div>
-                            <div className="font-sans text-base text-neutral-600 md:text-lg">
-                                <p>B.S. in Data Science (AI & ML Specialization)</p>
-                                <p>GPA: 3.97/4.00</p>
-                                <p className="mt-1 text-sm text-neutral-500 md:text-base">Coursework: Linear Algebra, Vector Calculus, Data Structures and Algorithms for Data Science</p>
-                            </div>
-                        </div>
+                    <div className="font-sans text-base text-neutral-500 md:text-right md:text-lg">
+                        <p>La Jolla, CA</p>
+                        <p>GPA: 3.95/4.00 · Expected Jun 2028</p>
                     </div>
                 </div>
+            </ResumeSection>
 
-                {/* Professional Experience */}
-                <div className="flex flex-col space-y-4 md:flex-row md:space-x-12 md:space-y-0">
-                    <div className="w-full md:w-1/3">
-                        <h3 className="text-xl font-helvetica-neue font-medium text-neutral-500 md:text-2xl">
-                            Professional Experience
-                        </h3>
-                    </div>
-                    <div className="flex w-full flex-col space-y-6 md:w-2/3">
-                        {/* Asakana */}
-                        <div className="flex flex-col space-y-1">
-                            <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl gap-2">
-                                    Asakana
-                                </h4>
-                                <span className="font-sans text-neutral-500">Oct 2025 — Present</span>
+            <ResumeSection title="Technical skills">
+                <dl className="grid gap-4 font-sans text-base leading-relaxed md:grid-cols-[12rem_1fr] md:text-lg">
+                    <dt className="font-medium text-neutral-900">Languages</dt><dd className="text-neutral-600">Python, Java, C++, SQL, TypeScript/JavaScript, Rust, Bash</dd>
+                    <dt className="font-medium text-neutral-900">Frameworks &amp; libraries</dt><dd className="text-neutral-600">PyTorch, TensorFlow, scikit-learn, Pandas, NumPy, React, FastAPI</dd>
+                    <dt className="font-medium text-neutral-900">Data &amp; infrastructure</dt><dd className="text-neutral-600">PostgreSQL, MongoDB, ChromaDB, Git, Docker, GCP, Cloud Run, Cloud SQL</dd>
+                </dl>
+            </ResumeSection>
+
+            <ResumeSection title="Experience">
+                <div className="divide-y divide-neutral-200">
+                    {experiences.map((experience) => (
+                        <article key={experience.organization} className="grid gap-4 py-7 first:pt-0 last:pb-0 md:grid-cols-[13rem_1fr] md:gap-10">
+                            <div className="font-sans text-sm text-neutral-500 md:text-base"><p>{experience.dates}</p><p>{experience.location}</p></div>
+                            <div>
+                                <h3 className="font-helvetica-neue text-xl font-medium md:text-2xl">{experience.organization}</h3>
+                                <p className="mt-1 font-sans text-base italic text-neutral-600 md:text-lg">{experience.role}</p>
+                                <ul className="mt-4 ml-5 list-disc space-y-2 font-sans text-base leading-relaxed text-neutral-600 md:text-lg">
+                                    {experience.bullets.map((bullet, index) => <li key={index}>{bullet}</li>)}
+                                </ul>
                             </div>
-                            <p className="font-sans text-base italic text-neutral-600 md:text-lg">Product Development Intern | Remote</p>
-                            <ul className="ml-5 list-outside list-disc space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                                <li>Engineered an OCR bulk upload feature using Gemini Flash Lite, allowing suppliers to upload thousands of unstructured product sheets (PDFs, Excel, etc.) to be sorted into the Asakana MongoDB database.</li>
-                                <li>Conceptualized and developed a DialogflowCX agent to automatically process buyer orders (identifying buyers, applying specific pricing policies, propagating orders) using Cloud SQL and Twilio SMS.</li>
-                                <li>Conducted market research with industry insiders to translate insights into actionable product improvements.</li>
-                            </ul>
-                        </div>
-                    </div>
+                        </article>
+                    ))}
                 </div>
+            </ResumeSection>
 
-                {/* Research Experience */}
-                <div className="flex flex-col space-y-4 md:flex-row md:space-x-12 md:space-y-0">
-                    <div className="w-full md:w-1/3">
-                        <h3 className="text-xl font-helvetica-neue font-medium text-neutral-500 md:text-2xl">
-                            Research Experience
-                        </h3>
-                    </div>
-                    <div className="flex w-full flex-col space-y-6 md:w-2/3">
-                        {/* Rare AI Lab */}
-                        <div className="flex flex-col space-y-1">
-                            <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl gap-2">
-                                    Rare AI Lab, UC San Diego
-                                </h4>
-                                <span className="font-sans text-neutral-500">Sep 2024 — Dec 2025</span>
-                            </div>
-                            {/* TODO: add hyperlinks to this, regeneron manuscript to maix lab, conference abstract to maix lab */}
-                            <p className="font-sans text-base italic text-neutral-600 md:text-lg">Research Intern under Prof. Aobo Li | La Jolla, CA</p>
-                            <ul className="ml-5 list-outside list-disc space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                                <li>Benchmarked various ML architectures (vision transformers, 2D convolutions, graph-based DeepSphere, 3D autoencoders) against KamNet for neutrinoless double beta decay detection, evaluating background rejection accuracy and tuning hyperparameters.</li>
-                                <li>Applied RESuM surrogate modeling framework to COH-Ar-750 detector simulation data. Used multi-fidelity approach (conditional neural process + Gaussian process) to assess neutron background rates, demonstrating optimal shielding configurations that reduce need for expensive Monte Carlo simulations.</li>
-                                <li>"Efficient optimization of COHERENT detector design parameters with the Rare Event Surrogate Model (RESUM)," submitted to Machine Learning and the Physical Sciences, NeurIPS 2025.</li>
-                            </ul>
-                        </div>
-
-                        {/* Maix Lab */}
-                        <div className="flex flex-col space-y-1">
-                            <div className="flex flex-col justify-between md:flex-row">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl gap-2">
-                                    MAIX Lab, Emory University
-                                </h4>
-                                <span className="font-sans text-neutral-500">Mar 2023 — Nov 2023</span>
-                            </div>
-                            <p className="font-sans text-base italic text-neutral-600 md:text-lg">Research Intern under Prof. Ran Xiao | Atlanta, GA</p>
-                            <ul className="ml-5 list-outside list-disc space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                                <li>Evaluated 10 data compression methods using XResNet for heart attack diagnostics. Identified 12-lead format for optimal performance (0.926 AUC) and autoencoder for efficiency.</li>
-                                <li>Constructed anatomically informed feature tensor for XResNet, achieving significant (p&lt;0.001) AUC increase to 93.7% for myocardial infarction detection. Developed regional learners (inferior, septal, anterior, lateral) combined with global learner using 1D CNNs to capture cross-lead spatial patterns.</li>
-                                <li>Zègre-Hemsey, J. K., Ding, C., Liu, B., Wright, D. W., et al. "Enhancing Deep Learning in Detecting Acute Myocardial Infarction via Anatomically Informed 12-Lead ECG."</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Projects */}
-                {/* TODO: add hyperlinks */}
-                <div className="flex flex-col space-y-4 md:flex-row md:space-x-12 md:space-y-0">
-                    <div className="w-full md:w-1/3">
-                        <h3 className="text-xl font-helvetica-neue font-medium text-neutral-500 md:text-2xl">
-                            Projects
-                        </h3>
-                    </div>
-                    <div className="flex w-full flex-col space-y-6 md:w-2/3">
-                        {/* CARP */}
-                        <div className="flex flex-col space-y-1">
-                            <div className="flex flex-col justify-between md:flex-row gap-2">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
-                                    CARP: AI-Powered Fishermen Health Monitoring
-                                </h4>
-                                <span className="font-sans text-neutral-500">Oct 2025</span>
-                            </div>
-                            <p className="font-sans text-base italic text-neutral-600 md:text-lg">Sushi Hackathon at Stanford University | Stanford, CA</p>
-                            <ul className="ml-5 list-outside list-disc space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                                <li>Engineered a dual-purpose carpal tunnel syndrome (CTS) wearable diagnostic brace using an Arduino Nano, dual load cells, and FSRs.</li>
-                                <li>Developed a Python-based Bluetooth API to transmit sensor data wirelessly for real-time analysis.</li>
-                                <li>Contributed to a full-stack dashboard with RAG AI agent for insights and data visualization of 50,000+ data points.</li>
-                            </ul>
-                        </div>
-
-                        {/* Bouncer */}
-                        <div className="flex flex-col space-y-1">
-                            <div className="flex flex-col justify-between md:flex-row gap-2">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
-                                    Bouncer: Malicious Actor Prevention System
-                                </h4>
-                                <span className="font-sans text-neutral-500">Jun 2025</span>
-                            </div>
-                            <p className="font-sans text-base italic text-neutral-600 md:text-lg">Berkeley AI Hackathon | San Francisco, CA</p>
-                            <ul className="ml-5 list-outside list-disc space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                                <li>Integrated Google Custom Search JSON API and Gemini Flash 2.0 to search public records from sign-up data.</li>
-                                <li>Engineered user risk prediction system with Claude Sonnet 4 to generate transparent 0–100 risk scores.</li>
-                                <li>Created React/Supabase dashboard with email notifications for high-risk users.</li>
-                            </ul>
-                        </div>
-
-                        {/* CiteTrace */}
-                        <div className="flex flex-col space-y-1">
-                            <div className="flex flex-col justify-between md:flex-row gap-2">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
-                                    CiteTrace: Research Knowledge Graph
-                                </h4>
-                                <span className="font-sans text-neutral-500">May 2025</span>
-                            </div>
-                            <p className="font-sans text-base italic text-neutral-600 md:text-lg">ACM x Intel Hackathon | Santa Clara, CA</p>
-                            <ul className="ml-5 list-outside list-disc space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                                <li>Developed an interactive knowledge graph organizing academic works and relationships.</li>
-                                <li>Implemented full RAG system allowing users to query uploaded scientific literature with citations.</li>
-                                <li>Optimized UI with D3 graph visualizations and integrated note-taking.</li>
-                            </ul>
-                        </div>
-
-                        {/* PillSnap */}
-                        <div className="flex flex-col space-y-1">
-                            <div className="flex flex-col justify-between md:flex-row gap-2">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
-                                    PillSnap: AI-Powered Pill Identifier
-                                </h4>
-                                <span className="font-sans text-neutral-500">Apr 2025</span>
-                            </div>
-                            <p className="font-sans text-base italic text-neutral-600 md:text-lg">UCSD DiamondHacks | La Jolla, CA</p>
-                            <ul className="ml-5 list-outside list-disc space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                                <li>Engineered prediction module fusing Gemini-generated descriptions with FDA database API.</li>
-                                <li>Fine-tuned Gemini Flash 2.0 with Vertex AI for regulated pill descriptions.</li>
-                                <li>Deployed full-stack app on Vercel and Google Cloud Run with custom domain.</li>
-                            </ul>
-                        </div>
-
-                        {/* Blind Navigation */}
-                        <div className="flex flex-col space-y-1">
-                            <div className="flex flex-col justify-between md:flex-row gap-2">
-                                <h4 className="text-lg font-helvetica-neue font-medium text-neutral-900 md:text-xl">
-                                    Low-Cost Blind Navigation Apparatus
-                                </h4>
-                                <span className="font-sans text-neutral-500">Sep 2022 - Feb 2023</span>
-                            </div>
-                            <p className="font-sans text-base italic text-neutral-600 md:text-lg">High School Research | Great Neck, NY</p>
-                            <ul className="ml-5 list-outside list-disc space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                                <li>Developed assistive computer vision system using YOLOv4-tiny, achieving 87.34% mAP.</li>
-                                <li>Engineered Raspberry Pi 4B headwear, reducing costs by 90% vs commercial alternatives.</li>
-                                <li>Implemented real-time audio feedback system using Python/OpenCV.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Accolades */}
-                <div className="flex flex-col space-y-4 md:flex-row md:space-x-12 md:space-y-0">
-                    <div className="w-full md:w-1/3">
-                        <h3 className="text-xl font-helvetica-neue font-medium text-neutral-500 md:text-2xl">
-                            Accolades
-                        </h3>
-                    </div>
-                    <div className="flex w-full flex-col space-y-4 md:w-2/3">
-                        <ul className="ml-5 list-outside list-disc space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                            <li><span className="font-bold text-neutral-900">3rd Place</span>, Sushi Hackathon at Stanford University (2025)</li>
-                            <li><span className="font-bold text-neutral-900">1st Place</span>, ACM x Intel Hackathon (2025)</li>
-                            <li><span className="font-bold text-neutral-900">Most Technical Project</span>, Innovate 4 SDSU Hackathon (2025)</li>
-                            <li><span className="font-bold text-neutral-900">Best Use of Auth0</span>, MLH DiamondHacks (2025)</li>
-                            <li><span className="font-bold text-neutral-900">Top 300 Scholar</span>, Regeneron STS (2024)</li>
-                            <li><span className="font-bold text-neutral-900">1st Place</span>, Journal of Young Explorers Meta (2022)</li>
-                        </ul>
-                    </div>
-                </div>
-
-                {/* TODO: update with new content, move to top */}
-                {/* Skills */}
-                <div className="flex flex-col space-y-4 md:flex-row md:space-x-12 md:space-y-0">
-                    <div className="w-full md:w-1/3">
-                        <h3 className="text-xl font-helvetica-neue font-medium text-neutral-500 md:text-2xl">
-                            Skills & Interests
-                        </h3>
-                    </div>
-                    <div className="flex w-full flex-col space-y-4 md:w-2/3">
-                        <div className="flex flex-col space-y-1 font-sans text-base text-neutral-600 leading-relaxed md:text-lg">
-                            <p><span className="font-bold text-neutral-900">Proficiency in:</span> Python, PyTorch, TensorFlow, NumPy, scikit-learn, high-performance computing</p>
-                            <p><span className="font-bold text-neutral-900">Interests:</span> Nature language processing, world models, AI safety, building a startup, cat videos, admiring pretty sunsets</p>
-                        </div>
-                    </div>
-                </div>
-
+            <div className="flex flex-col justify-between gap-4 pt-10 md:flex-row md:items-center">
+                <p className="font-sans text-neutral-500">Selected work now lives in one complete archive.</p>
+                <Link href="/projects" className="font-helvetica-neue text-xl font-medium underline decoration-neutral-300 underline-offset-4 transition-colors hover:decoration-neutral-900">View all projects →</Link>
             </div>
         </main>
     );
