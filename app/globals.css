@@ -42,8 +42,8 @@ a {
   display: flex;
   width: 100%;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 3rem;
+  justify-content: flex-start;
+  gap: 3.5rem;
 }
 
 .home-hero__eyebrow {
@@ -96,11 +96,6 @@ a {
   .home-hero {
     max-width: 52rem;
   }
-
-  .home-hero__copy {
-    justify-content: flex-start;
-    gap: 3.5rem;
-  }
 }
 
 @media (orientation: portrait) and (max-width: 600px) {
@@ -109,7 +104,7 @@ a {
   }
 }
 
-@media (orientation: portrait) and (max-height: 700px) {
+@media (max-height: 700px) {
   .home-hero__copy {
     gap: 2rem;
   }
