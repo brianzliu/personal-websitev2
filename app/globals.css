@@ -99,12 +99,18 @@ a {
 
   .home-hero__copy {
     justify-content: flex-start;
-    gap: clamp(3.5rem, 8vh, 6rem);
+    gap: 3.5rem;
   }
 }
 
 @media (orientation: portrait) and (max-width: 600px) {
   .home-hero__student {
     font-size: clamp(1.625rem, 6.4vw, 2.5rem);
+  }
+}
+
+@media (orientation: portrait) and (max-height: 700px) {
+  .home-hero__copy {
+    gap: 2rem;
   }
 }
