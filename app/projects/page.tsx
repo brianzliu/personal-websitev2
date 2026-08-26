@@ -48,9 +48,7 @@ export default function ProjectsPage() {
     return (
         <main className="mx-auto w-full max-w-7xl px-6 py-12 md:py-20">
             <header className="border-b border-neutral-900 pb-10 md:pb-14">
-                <p className="mb-2 font-sans text-sm font-medium uppercase tracking-[0.18em] text-neutral-500">Archive · 2022–2026</p>
                 <h1 className="font-helvetica-neue text-6xl font-medium tracking-tighter md:text-8xl">Projects</h1>
-                <p className="mt-5 max-w-2xl font-sans text-lg leading-relaxed text-neutral-600 md:text-xl">Software, research tools, and questionable ideas that survived long enough to become demos.</p>
             </header>
 
             <div>
