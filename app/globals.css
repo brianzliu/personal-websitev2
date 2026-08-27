@@ -38,7 +38,7 @@ body {
   z-index: 0;
   inset-block: 0;
   display: none;
-  width: max(0px, calc((100vw - 80rem) / 2));
+  width: min(15rem, max(0px, calc((100vw - 80rem) / 2)));
   background-repeat: no-repeat;
   background-size: auto 145%;
   opacity: 0;
@@ -58,7 +58,7 @@ body {
 }
 
 .site-edge-art--left::after {
-  background: linear-gradient(to right, transparent 50%, var(--background) 100%);
+  background: linear-gradient(to right, transparent 32%, var(--background) 100%);
 }
 
 .site-edge-art--right {
@@ -68,7 +68,7 @@ body {
 }
 
 .site-edge-art--right::after {
-  background: linear-gradient(to left, transparent 50%, var(--background) 100%);
+  background: linear-gradient(to left, transparent 32%, var(--background) 100%);
 }
 
 @media (min-width: 100rem) {
@@ -80,7 +80,7 @@ body {
 
 @keyframes edge-art-reveal {
   to {
-    opacity: 1;
+    opacity: 0.58;
   }
 }
 
