@@ -44,7 +44,9 @@ export default function RootLayout({
       <body
         className={`${dm_sans.variable} ${helvetica_neue.variable} bg-white text-neutral-900 antialiased`}
       >
-        <div className="flex h-screen flex-col">
+        <div className="site-edge-art site-edge-art--left" aria-hidden="true" />
+        <div className="site-edge-art site-edge-art--right" aria-hidden="true" />
+        <div className="site-shell flex min-h-screen flex-col">
           <Navbar />
           {children}
         </div>
