@@ -66,33 +66,10 @@ a { color: inherit; text-decoration: none; }
   padding: var(--page-pad) 1.5rem 6rem;
 }
 
-/* ---------- avatar ---------- */
-
-.intro__title { --h1-size: clamp(2.1rem, 8vw, 2.7rem); position: relative; width: 100%; }
-.intro h1 { padding-right: 0; font-size: var(--h1-size); margin-bottom: 1.25rem; }
-.intro .lede { font-size: 1.1rem; }
-/* sits in the open space beside the heading, vertically centered on it */
-.avatar {
-  position: absolute;
-  /* vertically centered on the heading's line (line-height 1.2) */
-  top: calc(var(--h1-size) * 0.6 - 1.2rem);
-  transform: translateY(-45%);
-  /* 48% of the column's content width is your tuned 17.9rem on desktop; the min() keeps it clear of the heading (~5.2em wide) on narrower screens */
-  right: max(0px, min(48.4%, calc(100% - var(--h1-size) * 5.2 - 5.5rem)));
-  width: 4.5rem;
-  /* the files are the full 1086x1448 photo; only the top 78% of it is shown (4.5rem x 4/3 x 0.78) */
-  height: 4.68rem;
-  filter: grayscale(1);
-  transition: filter 300ms ease;
-  /* only the last sliver of the photo fades out */
-  -webkit-mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
-}
-.avatar[data-active="true"] { filter: grayscale(0); }
-
 /* ---------- type ---------- */
 
-.page h1 {
+.page h1,
+.home h1 {
   margin: 0 0 1.25rem;
   color: var(--foreground);
   font-size: 1.75rem;
@@ -100,14 +77,16 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: -0.02em;
   line-height: 1.2;
 }
-.page h2 {
+.page h2,
+.home h2 {
   margin: 0;
   color: var(--foreground);
   font-size: 1.15rem;
   font-weight: 500;
   letter-spacing: -0.01em;
 }
-.page p { margin: 0; }
+.page p,
+.home p { margin: 0; }
 .lede { color: var(--foreground); font-size: 1.15rem; }
 .muted { color: var(--muted); font-size: 0.875rem; }
 
@@ -174,7 +153,7 @@ a { color: inherit; text-decoration: none; }
   position: relative;
   align-self: center;
   width: calc(min(100% - 3rem, var(--column) + 0.5rem - 3rem));
-  height: 1rem;
+  height: 0.5rem;
   flex: none;
   padding: 0;
   border: 0;
@@ -188,3 +167,212 @@ a { color: inherit; text-decoration: none; }
 .dither { display: block; width: 100%; height: 100%; image-rendering: pixelated; pointer-events: none; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* ---------- home + chat ---------- */
+
+:root {
+  --bubble-blue: #0b84ff;
+  --bubble-gray: #e9e9eb;
+  --chat-line: #d1d1d6;
+  --chat-muted: #8e8e93;
+  --chat-rule: #efeff0;
+}
+
+/* once the photo is clicked the page becomes a fixed-height app view: only the message list scrolls */
+body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 100dvh; }
+
+.home { position: relative; z-index: 1; display: flex; flex: 1; flex-direction: column; width: 100%; max-width: var(--column); margin-inline: auto; }
+.home[data-phase="leaving"], .home[data-phase="chat"] { min-height: 0; }
+.home[data-phase="leaving"] { overflow: hidden; }
+.home__content { padding: var(--page-pad) 1.5rem 6rem; }
+.home[data-phase="chat"] .home__content { padding: 0; }
+
+/* home text animates away when the photo is clicked, then leaves the layout */
+.fade { transition: opacity 450ms ease, transform 450ms ease; transition-delay: calc(var(--i, 0) * 70ms); }
+.home:is([data-phase="leaving"], [data-phase="chat"]) .fade { opacity: 0; transform: translateY(-0.6rem); pointer-events: none; }
+.home[data-phase="returning"] .fade { animation: fade-back 500ms ease backwards; animation-delay: calc(var(--i, 0) * 70ms + 250ms); }
+@keyframes fade-back { from { opacity: 0; transform: translateY(0.6rem); } }
+.home[data-phase="chat"] .fade { display: none; }
+
+/* the title shrinks to the heading's real width, so the photo (placed at left: 100%) can never overlap the text */
+.intro__title { --h1-size: clamp(2.1rem, 8vw, 2.7rem); --photo-gap: 1.5rem; position: relative; width: fit-content; max-width: 100%; }
+.intro h1 { padding-right: 0; font-size: var(--h1-size); margin-bottom: 1.25rem; }
+.intro .lede { font-size: 1.1rem; }
+
+/* the avatar: a cutout on the home screen that morphs into a round chat avatar */
+.avatar { overflow: hidden; background: transparent; border-radius: 0; filter: grayscale(1); }
+.avatar img { object-fit: cover; object-position: 50% 0%; }
+.avatar[data-mode="home"], .avatar-slot {
+  position: absolute;
+  top: calc(var(--h1-size) * 0.6 - 0.275rem);
+  left: calc(100% + var(--photo-gap));
+  width: 4.5rem;
+  height: 4.68rem;
+  transform: translateY(-45%);
+  cursor: pointer;
+  transition: filter 300ms ease;
+  -webkit-mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
+}
+.avatar-slot { visibility: hidden; pointer-events: none; }
+.avatar[data-mode="home"][data-hover="true"] { filter: grayscale(0); }
+.avatar[data-mode="home"]:focus-visible { outline: 2px solid var(--foreground); outline-offset: 4px; }
+.avatar[data-mode="fly"], .avatar[data-mode="chat"], .avatar[data-mode="back"] {
+  position: fixed;
+  z-index: 5;
+  pointer-events: none;
+  filter: grayscale(0);
+  border-radius: 50%;
+  background: #fff;
+  outline: 1px solid var(--chat-line);
+  outline-offset: -1px;
+  transition: border-radius 700ms ease 200ms, background-color 700ms ease 200ms, filter 800ms ease 300ms, opacity 200ms ease;
+}
+.avatar[data-mode="back"] { filter: grayscale(1); border-radius: 0; background: transparent; outline-color: transparent; }
+.avatar[data-mode="fly"] img, .avatar[data-mode="chat"] img { transform: scale(1.12); transform-origin: 50% 28%; transition: transform 700ms ease 200ms; }
+
+/* the little "chat with me (beta)" nudge beside the photo */
+.chat-label {
+  position: absolute;
+  top: calc(var(--h1-size) * 0.6 - 0.95rem);
+  left: calc(100% + var(--photo-gap) + 4.5rem + 0.9rem);
+  width: max-content;
+  transform: translateY(-50%);
+  color: var(--foreground);
+  font-size: 1rem;
+  line-height: 1.2;
+  pointer-events: none;
+}
+.chat-label::before { content: "←"; display: inline-block; margin-right: 0.45rem; color: var(--muted); animation: nudge 1.8s ease-in-out infinite; }
+.chat-label small { color: var(--muted); font-size: 0.72em; }
+@keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-0.25rem); } }
+/* only visible while the mouse is on the photo; touch screens have no hover, so it is always shown there */
+.chat-label { opacity: 0; }
+.chat-label[data-hover="true"] { opacity: 1; }
+@media (hover: none) { .chat-label { opacity: 1; } }
+
+/* very narrow screens: the heading fills the width, so the photo and label sit above it instead of beside it */
+@media (max-width: 28rem) {
+  .intro__title { width: 100%; }
+  .home__content { padding-top: calc(var(--page-pad) + 2.6rem); }
+  .avatar[data-mode="home"], .avatar-slot { top: -2.9rem; left: auto; right: 0; transform: none; }
+  .chat-label { top: -1.6rem; left: auto; right: calc(4.5rem + 0.8rem); transform: none; font-size: 0.95rem; }
+  .chat-label::before { content: none; }
+}
+
+/* chat window sits on top of the home content, then takes over the layout */
+.chat__window {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 500ms ease 650ms, visibility 0s linear 650ms;
+}
+.home[data-phase="returning"] .chat__window { transition: opacity 300ms ease, visibility 0s linear 300ms; }
+.home[data-phase="leaving"] .chat__window { visibility: visible; opacity: 1; }
+.home[data-phase="chat"] .chat__window { position: relative; inset: auto; flex: 1; min-height: 0; visibility: visible; opacity: 1; transition: none; }
+
+
+.chat__bar { padding: 0.55rem 1.1rem 0; }
+.chat__back { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.25rem 0.4rem 0.25rem 0.2rem; border: 0; border-radius: 0.5rem; background: transparent; color: var(--bubble-blue); cursor: pointer; font: inherit; font-size: 0.95rem; }
+.chat__back:hover { background: #f4f9ff; }
+.chat__thread { display: flex; flex: 1; flex-direction: column; min-height: 0; overflow-x: hidden; overflow-y: auto; padding: 0.75rem 1.5rem 0.5rem; scrollbar-width: thin; }
+.chat__stamp { margin-bottom: 0.6rem; color: var(--chat-muted); font-size: 0.7rem; font-weight: 500; text-align: center; }
+
+.chat__row { display: flex; flex-direction: column; margin-top: 2px; }
+.chat__row[data-start="true"] { margin-top: 0.55rem; }
+.chat__row[data-role="user"] { align-items: flex-end; }
+.chat__row[data-role="assistant"] { position: relative; flex-direction: row; align-items: flex-end; padding-left: 3.85rem; }
+.chat__row[data-role="assistant"] .bubble { max-width: calc(100% - 0.5rem); }
+/* the avatar sits to the left of the last gray bubble in a run, like the person is speaking it */
+/* absolutely placed so a row is exactly as tall as its bubble whether or not it holds the avatar (no jumping when slots move) */
+.chat__slot { position: absolute; left: 0; bottom: 0; z-index: 1; width: 3.1rem; height: 3.1rem; overflow: hidden; border-radius: 50%; } /* z-index keeps the bubble tail's white patch from covering the avatar */
+.chat__slot[data-slot="active"], .chat__slot[data-slot="static"] { background: #fff; outline: 1px solid var(--chat-line); outline-offset: -1px; }
+.chat__slot img { object-fit: cover; object-position: 50% 0%; transform: scale(1.12); transform-origin: 50% 28%; }
+
+.bubble {
+  position: relative;
+  max-width: 78%;
+  padding: 0.5rem 0.9rem;
+  border-radius: 1.2rem;
+  font-size: 1rem;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  animation: bubble-in 260ms cubic-bezier(0.2, 0.8, 0.3, 1.2) backwards;
+}
+.bubble--user { background: var(--bubble-blue); color: #fff; transform-origin: bottom right; }
+.bubble--assistant { background: var(--bubble-gray); color: #000; transform-origin: bottom left; }
+@keyframes bubble-in { from { opacity: 0; transform: scale(0.85); } }
+
+/* iMessage-style tails on the last bubble of a run */
+.bubble[data-tail="true"]::before,
+.bubble[data-tail="true"]::after { content: ""; position: absolute; bottom: 0; height: 1.1rem; }
+.bubble--user[data-tail="true"]::before { right: -0.45rem; width: 1.25rem; background: var(--bubble-blue); border-bottom-left-radius: 1rem 0.85rem; }
+.bubble--user[data-tail="true"]::after { right: -1.6rem; width: 1.6rem; background: var(--background); border-bottom-left-radius: 0.65rem; }
+.bubble--assistant[data-tail="true"]::before { left: -0.45rem; width: 1.25rem; background: var(--bubble-gray); border-bottom-right-radius: 1rem 0.85rem; }
+.bubble--assistant[data-tail="true"]::after { left: -1.6rem; width: 1.6rem; background: var(--background); border-bottom-right-radius: 0.65rem; }
+
+.bubble--typing { display: flex; align-items: center; gap: 0.28rem; min-height: 2.3rem; padding: 0 0.95rem; } /* same height as a one-line bubble, so the typing dots swap for text without a jump */
+.bubble--typing i { width: 0.45rem; height: 0.45rem; border-radius: 50%; background: #a4a4a9; animation: typing-dot 1.2s ease-in-out infinite; }
+.bubble--typing i:nth-child(2) { animation-delay: 0.18s; }
+.bubble--typing i:nth-child(3) { animation-delay: 0.36s; }
+@keyframes typing-dot { 0%, 60%, 100% { opacity: 0.35; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-0.18rem); } }
+
+.chat__receipt[data-visible="false"] { visibility: hidden; }
+.chat__receipt { margin: 0.2rem 0.1rem 0; color: var(--chat-muted); font-size: 0.68rem; font-weight: 500; }
+
+/* composer: top border, suggestion chips, input */
+.chat__composer { border-top: 1px solid var(--chat-rule); }
+
+.sugg { position: relative; }
+.sugg__row {
+  display: flex;
+  gap: 0.45rem;
+  padding: 0.6rem 1.5rem 0.2rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  --fade-l: 0px;
+  --fade-r: 0px;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, #000 var(--fade-l), #000 calc(100% - var(--fade-r)), transparent 100%);
+}
+.sugg__row::-webkit-scrollbar { display: none; }
+.sugg[data-left="true"] .sugg__row { --fade-l: 2.75rem; }
+.sugg[data-right="true"] .sugg__row { --fade-r: 2.75rem; }
+.sugg__row button {
+  flex: none;
+  cursor: pointer;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--chat-line);
+  border-radius: 1rem;
+  background: var(--background);
+  color: var(--bubble-blue);
+  font: inherit;
+  font-size: 0.85rem;
+  transition: background-color 150ms;
+}
+.sugg__row button:hover { background: #f4f9ff; }
+
+/* arrows appear when hovering an edge that can scroll further */
+.sugg__arrow { position: absolute; top: 0; bottom: 0; z-index: 1; display: grid; width: 3rem; place-items: center; padding: 0; border: 0; background: transparent; opacity: 0; pointer-events: none; cursor: pointer; transition: opacity 150ms; }
+.sugg__arrow--left { left: 0; }
+.sugg__arrow--right { right: 0; }
+.sugg__arrow span { display: grid; width: 1.6rem; height: 1.6rem; place-items: center; border-radius: 50%; background: #fff; color: #3c3c43; box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18); }
+.sugg[data-left="true"] .sugg__arrow--left, .sugg[data-right="true"] .sugg__arrow--right { pointer-events: auto; }
+.sugg[data-left="true"] .sugg__arrow--left:hover, .sugg[data-right="true"] .sugg__arrow--right:hover { opacity: 1; }
+
+.chat__form { padding: 0.5rem 1.25rem max(1rem, env(safe-area-inset-bottom)); }
+.chat__field { display: flex; align-items: center; gap: 0.4rem; padding: 0.22rem 0.25rem 0.22rem 1rem; border: 1px solid var(--chat-line); border-radius: 1.35rem; }
+.chat__field:focus-within { border-color: #b5b5ba; }
+.chat__field input { flex: 1; min-width: 0; padding: 0.3rem 0; border: 0; background: transparent; outline: 0; color: var(--foreground); font: inherit; font-size: 1rem; }
+.chat__field input::placeholder { color: var(--chat-muted); }
+.chat__send { display: grid; flex: none; width: 1.9rem; height: 1.9rem; place-items: center; border: 0; border-radius: 50%; background: #c7c7cc; color: #fff; cursor: default; transition: background-color 150ms, transform 150ms; }
+.chat__send[data-ready="true"] { background: var(--bubble-blue); cursor: pointer; }
+.chat__send[data-ready="true"]:active { transform: scale(0.92); }
+
+@media (prefers-reduced-motion: reduce) {
+  .avatar, .avatar img, .bubble, .fade, .chat-label, .chat__window { animation: none !important; transition: none !important; }
+}

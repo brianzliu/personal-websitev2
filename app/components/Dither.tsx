@@ -74,10 +74,12 @@ function lens(u: number, w: number) {
     return smooth(0, 1, 1 - Math.abs(2 * u - 1) / (h + 1e-3));
 }
 
-const CELL = 3;
+const CELL = 2; // css px per dither cell (was 3: smaller = finer)
+const BASE_CELL = 3; // the field functions were tuned at 3px cells, so coordinates are rescaled to that unit
+const SCALE = CELL / BASE_CELL;
 const LEVELS = 4;
 const SPEED = 0.7;
-const CURSOR_REACH = 20;
+const CURSOR_REACH = 20 / SCALE;
 
 export default function Dither({ effect, className }: { effect: DitherEffect; className?: string }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -114,8 +116,8 @@ export default function Dither({ effect, className }: { effect: DitherEffect; cl
             const data = image.data;
             const t = time / 1000;
             const rect = canvas.getBoundingClientRect();
-            const ox = rect.left / CELL;
-            const oy = rect.top / CELL;
+            const ox = rect.left / BASE_CELL;
+            const oy = rect.top / BASE_CELL;
 
             const hasPointer = pointer.x >= 0;
             const px = (pointer.x - rect.left) / CELL;
@@ -143,7 +145,7 @@ export default function Dither({ effect, className }: { effect: DitherEffect; cl
                         fy = y - dy * k * 0.9;
                         boost = k * 0.35;
                     }
-                    const raw = field(fx + ox, fy + oy, t, mx + ox, my + oy) + boost;
+                    const raw = field(fx * SCALE + ox, fy * SCALE + oy, t, mx * SCALE + ox, my * SCALE + oy) + boost;
                     const v = Math.min(1, Math.max(0, raw * lens(u, wx)));
                     // ordered dither between the nearest gray levels
                     const scaled = v * steps;
