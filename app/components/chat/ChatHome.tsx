@@ -172,12 +172,16 @@ export default function ChatHome() {
             });
             const view = thread.getBoundingClientRect();
             el.style.opacity = returning || (to.bottom > view.top + 4 && to.top < view.bottom - 4) ? '1' : '0';
+            // clip to the message area, so the avatar tucks under the message bar (or the top edge) exactly like the text does
+            const cutTop = returning ? 0 : Math.max(0, view.top - next.top);
+            const cutBottom = returning ? 0 : Math.max(0, next.top + next.height - view.bottom);
+            el.style.clipPath = cutTop || cutBottom ? `inset(${cutTop}px 0px ${cutBottom}px 0px)` : '';
         };
         raf = requestAnimationFrame(tick);
         return () => {
             cancelAnimationFrame(raf);
             // back on the home screen the CSS positions the avatar again
-            el.style.left = el.style.top = el.style.width = el.style.height = el.style.opacity = '';
+            el.style.left = el.style.top = el.style.width = el.style.height = el.style.opacity = el.style.clipPath = '';
         };
     }, [inChat]);
 
