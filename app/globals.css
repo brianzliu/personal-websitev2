@@ -250,6 +250,23 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 .chat-label::before { content: "←"; display: inline-block; margin-right: 0.45rem; color: var(--muted); animation: nudge 1.8s ease-in-out infinite; }
 .chat-label small { color: var(--muted); font-size: 0.72em; }
 @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-0.25rem); } }
+/* tiny "click me" under the photo, desktop only (touch screens already show the "chat with me" label) */
+.click-hint { display: none; }
+@media (hover: hover) and (min-width: 28.01rem) {
+  .click-hint {
+    display: block;
+    position: absolute;
+    top: calc(var(--h1-size) * 0.6 - 0.275rem + 2.574rem + 0.2rem); /* just below the photo's bottom edge */
+    left: calc(100% + var(--photo-gap));
+    width: 4.5rem;
+    color: var(--muted);
+    font-size: 0.62rem;
+    letter-spacing: 0.04em;
+    text-align: center;
+    pointer-events: none;
+  }
+}
+
 /* only visible while the mouse is on the photo; touch screens have no hover, so it is always shown there */
 .chat-label { opacity: 0; }
 .chat-label[data-hover="true"] { opacity: 1; }
