@@ -8,7 +8,7 @@ import { MAX_USER_MESSAGES } from '../../lib/limits';
 
 type Role = 'user' | 'assistant';
 type Message = { id: number; role: Role; content: string; local?: boolean };
-type Face = 'neutral' | 'smile' | 'grin' | 'thinking';
+type Face = 'neutral' | 'smile' | 'grin' | 'thinking' | 'thinking2' | 'thinking3';
 type Phase = 'home' | 'leaving' | 'chat' | 'returning';
 type Box = { left: number; top: number; width: number; height: number };
 
@@ -16,7 +16,9 @@ const FACES: Record<Face, string> = {
     neutral: '/images/headshots/headshot-neutral.png',
     smile: '/images/headshots/headshot-smile.png',
     grin: '/images/headshots/headshot-grin.png',
-    thinking: '/images/headshots/headshot-thinking.png',
+    thinking: '/images/headshots/headshot-thinking-1.png',
+    thinking2: '/images/headshots/headshot-thinking-2.png',
+    thinking3: '/images/headshots/headshot-thinking-3.png',
 };
 // stop-motion frames played while hovering the photo on the home screen
 const HOVER_FRAMES: Face[] = ['neutral', 'smile', 'grin'];
@@ -25,6 +27,9 @@ const FLIGHT_MS = 1050;
 // expressions the face cycles through while text streams in
 const TALK_FACES: Face[] = ['smile', 'grin', 'neutral', 'smile', 'grin', 'smile', 'neutral', 'grin'];
 const TALK_MS = 150;
+// chin-rub frames cycled while the model is thinking (there and back, so the hand keeps moving)
+const THINK_FACES: Face[] = ['thinking', 'thinking2', 'thinking3', 'thinking2'];
+const THINK_MS = 260;
 
 const GREETING = [
     "hey! i'm the virtual version of brian 👋",
@@ -79,6 +84,7 @@ export default function ChatHome() {
     const [thinking, setThinking] = useState(false);
     const [talking, setTalking] = useState(false);
     const [talkFace, setTalkFace] = useState<Face>('neutral');
+    const [thinkFace, setThinkFace] = useState<Face>('thinking');
     const [busy, setBusy] = useState(false);
     const [input, setInput] = useState('');
     const [stamp, setStamp] = useState('');
@@ -121,6 +127,15 @@ export default function ChatHome() {
         return () => clearInterval(id);
     }, [talking]);
 
+    // while waiting for the model, the hand rubs the chin
+    useEffect(() => {
+        if (!thinking) return;
+        let i = 0;
+        setThinkFace(THINK_FACES[0]);
+        const id = setInterval(() => { i = (i + 1) % THINK_FACES.length; setThinkFace(THINK_FACES[i]); }, THINK_MS);
+        return () => clearInterval(id);
+    }, [thinking]);
+
     // after the click the avatar is a fixed element that eases toward the slot beside the latest gray message
     const inChat = phase !== 'home';
     useLayoutEffect(() => {
@@ -149,6 +164,12 @@ export default function ChatHome() {
             const next = { left: ease(from.left, to.left), top: ease(from.top, to.top), width: ease(from.width, to.width), height: ease(from.height, to.height) };
             cur.current = next;
             apply(next);
+            // a still copy stays hidden for exactly as long as the live avatar overlaps it, then fades in
+            thread.querySelectorAll<HTMLElement>('[data-slot="static"]').forEach((s) => {
+                const r = s.getBoundingClientRect();
+                const hit = r.left < next.left + next.width && r.right > next.left && r.top < next.top + next.height && r.bottom > next.top;
+                s.dataset.covered = hit ? 'true' : 'false';
+            });
             const view = thread.getBoundingClientRect();
             el.style.opacity = returning || (to.bottom > view.top + 4 && to.top < view.bottom - 4) ? '1' : '0';
         };
@@ -307,7 +328,7 @@ export default function ChatHome() {
     const hasUserMessage = userCount > 0;
     const remaining = MAX_USER_MESSAGES - userCount;
     const limitReached = remaining <= 0 && !busy;
-    const shown: Face = phase === 'home' || phase === 'returning' ? HOVER_FRAMES[hoverFrame] : thinking ? 'thinking' : talking ? talkFace : 'neutral';
+    const shown: Face = phase === 'home' || phase === 'returning' ? HOVER_FRAMES[hoverFrame] : thinking ? thinkFace : talking ? talkFace : 'neutral';
     const mode = phase === 'home' ? 'home' : phase === 'leaving' ? 'fly' : phase === 'returning' ? 'back' : 'chat';
 
     return (

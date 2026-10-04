@@ -291,7 +291,9 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 /* absolutely placed so a row is exactly as tall as its bubble whether or not it holds the avatar (no jumping when slots move) */
 .chat__slot { position: absolute; left: 0; bottom: 0; z-index: 1; width: 3.1rem; height: 3.1rem; overflow: hidden; border-radius: 50%; } /* z-index keeps the bubble tail's white patch from covering the avatar */
 .chat__slot[data-slot="active"], .chat__slot[data-slot="static"] { background: #fff; outline: 1px solid var(--chat-line); outline-offset: -1px; }
-.chat__slot[data-slot="static"] { animation: slot-in 450ms ease 550ms backwards; } /* the still copy fades in only after the live avatar has glided away, so they never overlap */
+/* the still copy fades in as soon as the live avatar has moved off it (script sets data-covered), so they never overlap */
+.chat__slot[data-slot="static"] { opacity: 1; transition: opacity 250ms ease; animation: slot-in 250ms ease 80ms backwards; }
+.chat__slot[data-slot="static"][data-covered="true"] { opacity: 0; transition: none; }
 @keyframes slot-in { from { opacity: 0; transform: scale(0.85); } }
 .chat__slot img { object-fit: cover; object-position: 50% 0%; transform: scale(1.12); transform-origin: 50% 28%; }
 
