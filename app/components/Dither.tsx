@@ -80,6 +80,7 @@ const SCALE = CELL / BASE_CELL;
 const LEVELS = 4;
 const SPEED = 0.7;
 const CURSOR_REACH = 20 / SCALE;
+const FLOOR_ALPHA = 0.16; // faintest shade inside the band: no pure-white pixels (scaled down toward the tapered edges so they still fade out)
 
 export default function Dither({ effect, className }: { effect: DitherEffect; className?: string }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -146,7 +147,8 @@ export default function Dither({ effect, className }: { effect: DitherEffect; cl
                         boost = k * 0.35;
                     }
                     const raw = field(fx * SCALE + ox, fy * SCALE + oy, t, mx * SCALE + ox, my * SCALE + oy) + boost;
-                    const v = Math.min(1, Math.max(0, raw * lens(u, wx)));
+                    const shape = lens(u, wx);
+                    const v = Math.min(1, Math.max(0, raw * shape));
                     // ordered dither between the nearest gray levels
                     const scaled = v * steps;
                     const base = Math.floor(scaled);
@@ -156,7 +158,7 @@ export default function Dither({ effect, className }: { effect: DitherEffect; cl
                     data[i] = 17;
                     data[i + 1] = 17;
                     data[i + 2] = 17;
-                    data[i + 3] = Math.round((level / steps) * 255);
+                    data[i + 3] = Math.max(Math.round((level / steps) * 255), Math.round(FLOOR_ALPHA * 255 * shape));
                 }
             }
             ctx.putImageData(image, 0, 0);

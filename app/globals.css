@@ -110,9 +110,11 @@ a { color: inherit; text-decoration: none; }
 ::selection { background: color-mix(in srgb, #fbbc04 55%, white); color: var(--foreground); }
 
 /* hoverable phrases: the text itself changes color and the cursor becomes a themed emoji */
-.hl { transition: color 700ms ease; }
-.hl[data-lit="true"] { color: var(--hl-color); }
+.hl { transition: color 700ms ease, -webkit-text-stroke-width 700ms ease; }
+.hl[data-lit="true"] { color: var(--hl-color); -webkit-text-stroke-width: 0.55px; } /* faux semi-bold: Helvetica Neue has no semibold, and swapping weights would reflow the paragraph */
+h1 .hl[data-lit="true"], h2 .hl[data-lit="true"] { -webkit-text-stroke-width: 0; } /* headings are already bold */
 .hl:hover { cursor: var(--hl-cursor, pointer); }
+.hl[data-busy="true"] { pointer-events: none; } /* not hoverable while its color is mid-transition */
 .hl-red { --hl-color: #e5484d; }
 .hl-blue { --hl-color: #2f6fed; }
 .hl-gold { --hl-color: #d9a000; }
@@ -201,8 +203,8 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 .intro .lede { font-size: 1.1rem; }
 
 /* the avatar: a cutout on the home screen that morphs into a round chat avatar */
-.avatar { overflow: hidden; background: transparent; border-radius: 0; filter: grayscale(1); }
-.avatar img { object-fit: cover; object-position: 50% 0%; }
+.avatar { overflow: hidden; background: transparent; border-radius: 0; filter: grayscale(1); outline: 1px solid transparent; outline-offset: -1px; } /* ring is transparent on the home screen and fades in once the avatar flies */
+.avatar img { object-fit: cover; object-position: 50% 0%; transition: inset 700ms ease 200ms, width 700ms ease 200ms, height 700ms ease 200ms, border-radius 700ms ease 200ms, transform 700ms ease 200ms; }
 .avatar[data-mode="home"], .avatar-slot {
   position: absolute;
   top: calc(var(--h1-size) * 0.6 - 0.275rem);
@@ -227,10 +229,11 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
   background: #fff;
   outline: 1px solid var(--chat-line);
   outline-offset: -1px;
-  transition: border-radius 700ms ease 200ms, background-color 700ms ease 200ms, filter 800ms ease 300ms, opacity 200ms ease;
+  transition: border-radius 700ms ease 200ms, background-color 700ms ease 200ms, outline-color 700ms ease 300ms, filter 800ms ease 300ms, opacity 200ms ease;
 }
 .avatar[data-mode="back"] { filter: grayscale(1); border-radius: 0; background: transparent; outline-color: transparent; }
-.avatar[data-mode="fly"] img, .avatar[data-mode="chat"] img { transform: scale(1.12); transform-origin: 50% 28%; transition: transform 700ms ease 200ms; }
+/* in the chat the circle is 3.4rem, but the photo keeps its earlier 3.1rem size (3.1 / 3.4 = 91.2%): centered sideways, resting on the bottom of the ring (the ring clips it there), with the extra space above */
+.avatar[data-mode="fly"] img, .avatar[data-mode="chat"] img { inset: auto auto 0 4.4% !important; width: 91.2% !important; height: 91.2% !important; border-radius: 0; transform: scale(1.12); transform-origin: 50% 28%; }
 
 /* the little "chat with me (beta)" nudge beside the photo */
 .chat-label {
@@ -285,17 +288,17 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 .chat__row { display: flex; flex-direction: column; margin-top: 2px; }
 .chat__row[data-start="true"] { margin-top: 0.55rem; }
 .chat__row[data-role="user"] { align-items: flex-end; }
-.chat__row[data-role="assistant"] { position: relative; flex-direction: row; align-items: flex-end; padding-left: 3.85rem; }
+.chat__row[data-role="assistant"] { position: relative; flex-direction: row; align-items: flex-end; padding-left: 4.15rem; }
 .chat__row[data-role="assistant"] .bubble { max-width: calc(100% - 0.5rem); }
 /* the avatar sits to the left of the last gray bubble in a run, like the person is speaking it */
 /* absolutely placed so a row is exactly as tall as its bubble whether or not it holds the avatar (no jumping when slots move) */
-.chat__slot { position: absolute; left: 0; bottom: 0; z-index: 1; width: 3.1rem; height: 3.1rem; overflow: hidden; border-radius: 50%; } /* z-index keeps the bubble tail's white patch from covering the avatar */
-.chat__slot[data-slot="active"], .chat__slot[data-slot="static"] { background: #fff; outline: 1px solid var(--chat-line); outline-offset: -1px; }
+.chat__slot { position: absolute; left: 0; bottom: 0; z-index: 1; width: 3.4rem; height: 3.4rem; overflow: hidden; border-radius: 50%; } /* z-index keeps the bubble tail's white patch from covering the avatar */
+.chat__slot[data-slot="static"] { background: #fff; outline: 1px solid var(--chat-line); outline-offset: -1px; }
 /* the still copy fades in as soon as the live avatar has moved off it (script sets data-covered), so they never overlap */
 .chat__slot[data-slot="static"] { opacity: 1; transition: opacity 250ms ease; animation: slot-in 250ms ease 80ms backwards; }
 .chat__slot[data-slot="static"][data-covered="true"] { opacity: 0; transition: none; }
 @keyframes slot-in { from { opacity: 0; transform: scale(0.85); } }
-.chat__slot img { object-fit: cover; object-position: 50% 0%; transform: scale(1.12); transform-origin: 50% 28%; }
+.chat__slot img { inset: auto auto 0 4.4% !important; width: 91.2% !important; height: 91.2% !important; border-radius: 0; object-fit: cover; object-position: 50% 0%; transform: scale(1.12); transform-origin: 50% 28%; }
 
 .bubble {
   position: relative;
