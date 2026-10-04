@@ -261,6 +261,7 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
     width: 4.5rem;
     color: var(--muted);
     font-size: 0.62rem;
+    font-style: italic;
     letter-spacing: 0.04em;
     text-align: center;
     pointer-events: none;
