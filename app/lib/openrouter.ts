@@ -1,6 +1,6 @@
 const BASE = process.env.OPENROUTER_BASE_URL ?? 'https://openrouter.ai/api/v1';
 
-export const CHAT_MODEL = process.env.OPENROUTER_MODEL ?? 'anthropic/claude-sonnet-5.5';
+export const CHAT_MODEL = process.env.OPENROUTER_MODEL ?? '~deepseek/deepseek-flash-latest';
 export const EMBEDDING_MODEL = process.env.OPENROUTER_EMBEDDING_MODEL ?? 'voyageai/voyage-4-lite';
 
 export type ToolCall = { id: string; type: 'function'; function: { name: string; arguments: string } };
@@ -18,7 +18,7 @@ function headers() {
     return {
         Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': process.env.SITE_URL ?? 'https://brianliu.io',
+        'HTTP-Referer': process.env.SITE_URL ?? 'https://brianzliu.com/',
         'X-Title': 'brianliu.io chat',
     };
 }
