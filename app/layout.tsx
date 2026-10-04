@@ -1,14 +1,7 @@
 import type { Metadata } from "next";
-import { DM_Sans } from "next/font/google";
 import HelveticaNeue from "next/font/local"
 import "./globals.css";
-import Navbar from "./Navbar"
-
-const dm_sans = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
-  weight: ["400", "500", "600", "700"],
-});
+import SiteChrome from "./components/SiteChrome";
 
 const helvetica_neue = HelveticaNeue({
   src: [
@@ -41,15 +34,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${dm_sans.variable} ${helvetica_neue.variable} bg-white text-neutral-900 antialiased`}
-      >
-        <div className="site-edge-art site-edge-art--left" aria-hidden="true" />
-        <div className="site-edge-art site-edge-art--right" aria-hidden="true" />
-        <div className="site-shell flex min-h-screen flex-col">
-          <Navbar />
-          {children}
-        </div>
+      <body className={`${helvetica_neue.variable} antialiased`}>
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

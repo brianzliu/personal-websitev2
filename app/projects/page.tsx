@@ -46,27 +46,19 @@ const projects = [
 
 export default function ProjectsPage() {
     return (
-        <main className="mx-auto w-full max-w-7xl px-6 py-12 md:py-20">
-            <header className="border-b border-neutral-900 pb-10 md:pb-14">
-                <h1 className="font-helvetica-neue text-6xl font-medium tracking-tighter md:text-8xl">Projects</h1>
-            </header>
-
-            <div>
-                {projects.map((project, index) => (
-                    <article key={project.name} className="group grid gap-5 border-b border-neutral-200 py-8 md:grid-cols-[4rem_minmax(0,1fr)_13rem] md:gap-8 md:py-12">
-                        <span className="font-sans text-sm tabular-nums text-neutral-400">{String(index + 1).padStart(2, "0")}</span>
-                        <div>
-                            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                                <h2 className="font-helvetica-neue text-3xl font-medium tracking-tight md:text-5xl">{project.name}</h2>
-                                <span className="font-sans text-base text-neutral-500 md:text-lg">{project.subtitle}</span>
-                            </div>
-                            <p className="mt-4 max-w-3xl font-sans text-base leading-relaxed text-neutral-600 md:text-lg">{project.description}</p>
-                            <p className="mt-4 font-sans text-sm text-neutral-500 md:text-base">{project.stack}</p>
-                        </div>
-                        <div className="flex flex-row justify-between gap-5 font-sans text-sm text-neutral-500 md:flex-col md:items-end md:text-right md:text-base">
-                            <div><p>{project.date}</p><p className="mt-1">{project.context}</p></div>
-                            {project.href && <Link href={project.href} target="_blank" rel="noreferrer" className="shrink-0 font-medium text-neutral-900 underline decoration-neutral-300 underline-offset-4 transition-colors hover:decoration-neutral-900">{project.linkLabel} ↗</Link>}
-                        </div>
+        <main className="page">
+            <h1><span className="hl hl-yellow">Projects</span></h1>
+            <div className="section__body" style={{ marginTop: "2.5rem" }}>
+                {projects.map((project) => (
+                    <article key={project.name} className="entry">
+                        <h2>
+                            {project.href
+                                ? <Link href={project.href} target="_blank" rel="noreferrer" className="link">{project.name} ↗</Link>
+                                : project.name}
+                        </h2>
+                        <p className="muted">{project.date} · {project.context}</p>
+                        <p className="mt-2">{project.subtitle}. {project.description}</p>
+                        <p className="muted mt-1">{project.stack}</p>
                     </article>
                 ))}
             </div>

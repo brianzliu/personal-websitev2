@@ -1,43 +1,43 @@
-import ParallaxPhoto from "./components/ParallaxPhoto";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col">
-      <main className="home-hero">
-        <div className="home-hero__copy">
-          <div className="space-y-2">
-            <p className="home-hero__eyebrow font-sans font-medium tracking-[-0.07em] text-neutral-900">
-              Hi there! I’m
-            </p>
-            <h1 className="home-hero__heading font-helvetica-neue font-medium tracking-[-0.05em] text-neutral-900">
-              Brian Liu.
-            </h1>
-          </div>
+    <main className="page">
+      <section>
+        <h1>Hey, I&apos;m <span className="hl hl-yellow">Brian Liu</span>.</h1>
+        <p className="lede">I&apos;m a <span className="hl hl-blue">data science student</span> at UCSD.</p>
+        <p className="mt-5">
+          I love tinkering with data, software, and research, and you can find me building hackathon projects,
+          training models, or exploring San Diego in the sun.
+        </p>
+      </section>
 
-          <div className="space-y-2">
-            <p className="home-hero__eyebrow font-sans font-medium tracking-[-0.07em] text-neutral-900">
-              I love tinkering with
-            </p>
-            <h2 className="home-hero__heading font-helvetica-neue font-medium tracking-tighter text-neutral-900">
-              data,<br />software,<br />&amp; research
-            </h2>
-            <div className="flex w-fit max-w-full flex-col">
-              <p className="home-hero__eyebrow home-hero__student whitespace-nowrap pt-2 font-sans font-medium tracking-[-0.07em] leading-[0.8] text-neutral-900">
-                as a data science student
-              </p>
-              <div className="flex justify-end">
-                <span className="home-hero__eyebrow block pt-3 text-right font-sans font-medium tracking-[-0.07em]">
-                  @ UCSD ☀️
-                </span>
-              </div>
-            </div>
+      <section className="section">
+        <h2>Work</h2>
+        <div className="section__body">
+          <div className="entry">
+            <p>Research Intern at <Link href="/resume" className="link">Q-Lab, UC San Diego</Link></p>
+            <p className="muted">Jan. 2026 – Present</p>
+            <p>Building and evaluating AI systems for scientific simulation and single-cell forecasting.</p>
+          </div>
+          <div className="entry">
+            <p>Product Development Intern at <span className="text-neutral-900">Asakana (YC F26)</span></p>
+            <p className="muted">Oct. 2025 – Feb. 2026</p>
+            <p>Automated supplier data entry and built an AI-assisted ordering system.</p>
+          </div>
+          <div className="entry">
+            <p>Research Intern at <Link href="/resume" className="link">Rare AI Lab, UC San Diego</Link></p>
+            <p className="muted">Sep. 2024 – Dec. 2025</p>
           </div>
         </div>
+      </section>
 
-        <div className="home-hero__art" aria-hidden="true">
-          <ParallaxPhoto />
-        </div>
-      </main>
-    </div>
+      <div className="links">
+        <Link href="https://github.com/brianzliu" target="_blank" rel="noreferrer" className="link">github</Link>
+        <Link href="https://www.linkedin.com/in/brianzliu/" target="_blank" rel="noreferrer" className="link">linkedin</Link>
+        <a href="mailto:brianliu0317@gmail.com" className="link">email</a>
+        <Link href="/resume.pdf" target="_blank" className="link">resume</Link>
+      </div>
+    </main>
   );
 }
