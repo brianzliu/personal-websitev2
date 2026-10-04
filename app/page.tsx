@@ -1,10 +1,14 @@
 import Link from "next/link";
+import HeadshotAvatar from "./components/HeadshotAvatar";
 
 export default function Home() {
   return (
     <main className="page">
-      <section>
-        <h1>Hey, I&apos;m <span className="hl hl-red hl-wave">Brian Liu</span>.</h1>
+      <section className="intro">
+        <div className="intro__title">
+          <h1>Hey, I&apos;m <span className="hl hl-red hl-wave">Brian Liu</span>.</h1>
+          <HeadshotAvatar />
+        </div>
         <p className="lede">I&apos;m a <span className="hl hl-blue hl-laptop">data science student</span> at <span className="hl hl-gold hl-sun">UCSD</span>.</p>
         <p className="mt-5">
           I love tinkering with <span className="hl hl-green hl-science">data, software, and research</span>, and you can find me building hackathon projects,

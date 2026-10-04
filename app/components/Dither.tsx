@@ -70,7 +70,7 @@ function smooth(a: number, b: number, x: number) {
 // Thickness shrinks toward both ends, so the band tapers instead of ending in a rectangle
 function lens(u: number, w: number) {
     const cx = 2 * w - 1;
-    const h = Math.pow(Math.max(0, 1 - cx * cx), 0.22);
+    const h = Math.pow(Math.max(0, 1 - cx * cx), 0.08);
     return smooth(0, 1, 1 - Math.abs(2 * u - 1) / (h + 1e-3));
 }
 
