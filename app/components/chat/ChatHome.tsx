@@ -350,8 +350,6 @@ export default function ChatHome() {
 
                         <div ref={homeSlot} className="avatar-slot" aria-hidden="true" />
 
-                        <div className="click-hint fade" style={{ '--i': 0 } as React.CSSProperties} aria-hidden="true">(click me)</div>
-
                         <div
                             ref={avatarRef}
                             className="avatar"
