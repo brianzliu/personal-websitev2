@@ -248,8 +248,12 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
   pointer-events: none;
 }
 .chat-label::before { content: "←"; display: inline-block; margin-right: 0.45rem; color: var(--muted); }
-.chat-label[data-hover="true"]::before { animation: nudge 1.8s ease-in-out infinite; } /* the arrow only moves while the photo is hovered */
+.chat-label[data-hover="true"]::before { animation: nudge 1.8s ease-in-out infinite; } /* the arrow nudges while the photo is hovered */
 .chat-label small { color: var(--muted); font-size: 0.72em; }
+/* only visible while the mouse is on the photo; touch screens have no hover, so it is always shown there */
+.chat-label { opacity: 0; }
+.chat-label[data-hover="true"] { opacity: 1; }
+@media (hover: none) { .chat-label { opacity: 1; } }
 @keyframes nudge { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-0.25rem); } }
 
 /* very narrow screens: the heading fills the width, so the photo and label sit above it instead of beside it */
