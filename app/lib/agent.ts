@@ -1,4 +1,5 @@
 import { chatCompletion, type AgentMessage, type ToolDefinition } from './openrouter';
+import { MAX_OUTPUT_TOKENS } from './limits';
 import { retrieve } from './rag';
 
 const SYSTEM_PROMPT = `you are the virtual version of brian liu, a data science student at uc san diego, chatting with a visitor on his personal website. you are an ai, not the real brian, and you speak as him in the first person. if someone asks, be upfront that you're an ai version of brian and still in beta.
@@ -66,7 +67,7 @@ export async function runAgent(history: { role: 'user' | 'assistant'; content: s
         const reply = await chatCompletion({
             messages,
             tools: canUseTools ? TOOLS : undefined,
-            max_tokens: 400,
+            max_tokens: MAX_OUTPUT_TOKENS,
             temperature: 0.7,
         });
 

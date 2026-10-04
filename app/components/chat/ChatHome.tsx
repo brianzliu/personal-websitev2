@@ -2,7 +2,9 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import Hl, { LIT_MS } from '../Hl';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
+import { MAX_USER_MESSAGES } from '../../lib/limits';
 
 type Role = 'user' | 'assistant';
 type Message = { id: number; role: Role; content: string; local?: boolean };
@@ -81,6 +83,8 @@ export default function ChatHome() {
     const [input, setInput] = useState('');
     const [stamp, setStamp] = useState('');
     const [hovered, setHovered] = useState(false);
+    const [lit, setLit] = useState(false); // photo stays in color for LIT_MS (5s) after being hovered
+    const litTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
     const [hoverFrame, setHoverFrame] = useState(0);
 
     const avatarRef = useRef<HTMLDivElement>(null);
@@ -97,7 +101,7 @@ export default function ChatHome() {
 
     useEffect(() => {
         alive.current = true;
-        return () => { alive.current = false; };
+        return () => { alive.current = false; clearTimeout(litTimer.current); };
     }, []);
 
     // stop-motion while hovering the photo (mouse only)
@@ -190,31 +194,46 @@ export default function ChatHome() {
         setTalkFace('neutral');
     }, []);
 
+    const nowStamp = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
+
+    const playGreeting = useCallback(async (my: number) => {
+        for (const line of GREETING) {
+            if (!alive.current || session.current !== my) return;
+            setTyping(true);
+            await wait(900);
+            if (!alive.current || session.current !== my) return;
+            setTyping(false);
+            await streamAssistant(line, true, my);
+            await wait(250);
+        }
+    }, [streamAssistant]);
+
     const startChat = useCallback(async () => {
         if (started.current || !avatarRef.current) return; // guards against double-starts (double click, hot reload)
         started.current = true;
         const my = ++session.current;
         window.scrollTo(0, 0);
         cur.current = toBox(avatarRef.current.getBoundingClientRect());
-        setStamp(new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase());
+        setStamp(nowStamp());
         setPhase('leaving');
 
-        const stale = () => !alive.current || session.current !== my;
         await wait(FLIGHT_MS);
-        if (stale()) return;
+        if (!alive.current || session.current !== my) return;
         setPhase('chat');
 
         await wait(200);
-        for (const line of GREETING) {
-            if (stale()) return;
-            setTyping(true);
-            await wait(900);
-            if (stale()) return;
-            setTyping(false);
-            await streamAssistant(line, true, my);
-            await wait(250);
-        }
-    }, [streamAssistant]);
+        await playGreeting(my);
+    }, [playGreeting]);
+
+    // used when the conversation hits its message limit: clear it and say hi again without leaving the chat
+    const resetChat = useCallback(async () => {
+        const my = ++session.current;
+        stick.current = true;
+        setMessages([]); setRevealed({}); setTyping(false); setThinking(false); setTalking(false); setTalkFace('neutral');
+        setBusy(false); setInput(''); setStamp(nowStamp());
+        await wait(300);
+        await playGreeting(my);
+    }, [playGreeting]);
 
     // reverse of startChat: chat fades out, the avatar glides back to its home spot, the home text returns
     const goHome = useCallback(async () => {
@@ -236,7 +255,7 @@ export default function ChatHome() {
 
     async function send(text: string) {
         const content = text.trim();
-        if (!content || busy || phase !== 'chat') return;
+        if (!content || busy || phase !== 'chat' || messages.filter((m) => m.role === 'user').length >= MAX_USER_MESSAGES) return;
 
         const my = session.current;
         const userMessage: Message = { id: nextId.current++, role: 'user', content };
@@ -284,7 +303,10 @@ export default function ChatHome() {
 
     const lastUserId = [...messages].reverse().find((m) => m.role === 'user')?.id;
     const answered = messages.length > 0 && messages[messages.length - 1].role === 'assistant';
-    const hasUserMessage = messages.some((m) => m.role === 'user');
+    const userCount = messages.filter((m) => m.role === 'user').length;
+    const hasUserMessage = userCount > 0;
+    const remaining = MAX_USER_MESSAGES - userCount;
+    const limitReached = remaining <= 0 && !busy;
     const shown: Face = phase === 'home' || phase === 'returning' ? HOVER_FRAMES[hoverFrame] : thinking ? 'thinking' : talking ? talkFace : 'neutral';
     const mode = phase === 'home' ? 'home' : phase === 'leaving' ? 'fly' : phase === 'returning' ? 'back' : 'chat';
 
@@ -294,7 +316,7 @@ export default function ChatHome() {
                 <section className="intro">
                     <div className="intro__title">
                         <h1 className="fade" style={{ '--i': 0 } as React.CSSProperties}>
-                            Hey, I&apos;m <span className="hl hl-red hl-wave">Brian Liu</span>.
+                            Hey, I&apos;m <Hl className="hl-red hl-wave">Brian Liu</Hl>.
                         </h1>
 
                         <div className="chat-label fade" data-hover={hovered} style={{ '--i': 0 } as React.CSSProperties} aria-hidden="true">
@@ -308,12 +330,19 @@ export default function ChatHome() {
                             className="avatar"
                             data-mode={mode}
                                                         data-hover={hovered}
+                            data-lit={lit}
                             role={phase === 'home' ? 'button' : undefined}
                             tabIndex={phase === 'home' ? 0 : -1}
                             aria-label={phase === 'home' ? 'chat with me (beta)' : undefined}
                             onClick={() => void startChat()}
                             onKeyDown={onAvatarKey}
-                            onPointerEnter={(e) => { if (e.pointerType !== 'touch') setHovered(true); }}
+                            onPointerEnter={(e) => {
+                                if (e.pointerType === 'touch') return;
+                                setHovered(true);
+                                setLit(true);
+                                clearTimeout(litTimer.current);
+                                litTimer.current = setTimeout(() => setLit(false), LIT_MS);
+                            }}
                             onPointerLeave={(e) => { if (e.pointerType !== 'touch') setHovered(false); }}
                         >
                             {(Object.keys(FACES) as Face[]).map((key) => (
@@ -332,11 +361,11 @@ export default function ChatHome() {
                     </div>
 
                     <p className="lede fade" style={{ '--i': 1 } as React.CSSProperties}>
-                        I&apos;m a <span className="hl hl-blue hl-laptop">data science student</span> at <span className="hl hl-gold hl-sun">UCSD</span>.
+                        I&apos;m a <Hl className="hl-blue hl-laptop">data science student</Hl> at <Hl className="hl-gold hl-sun">UCSD</Hl>.
                     </p>
                     <p className="mt-5 fade" style={{ '--i': 2 } as React.CSSProperties}>
-                        I love tinkering with <span className="hl hl-green hl-science">data, software, and research</span>, and you can find me building hackathon projects,
-                        training models, or <span className="hl hl-pink hl-palm">exploring San Diego in the sun</span>.
+                        I love tinkering with <Hl className="hl-green hl-science">data, software, and research</Hl>, and you can find me building hackathon projects,
+                        training models, or <Hl className="hl-pink hl-palm">exploring San Diego in the sun</Hl>.
                     </p>
                 </section>
 
@@ -407,22 +436,32 @@ export default function ChatHome() {
 
                 <div className="chat__composer">
                     {!hasUserMessage && messages.length >= GREETING.length && !talking && <Suggestions items={SUGGESTIONS} onPick={(s) => void send(s)} />}
-                    <form className="chat__form" onSubmit={onSubmit}>
-                        <div className="chat__field">
-                            <input
-                                value={input}
-                                onChange={(e) => setInput(e.target.value)}
-                                placeholder="message"
-                                aria-label="message"
-                                maxLength={500}
-                                enterKeyHint="send"
-                                autoComplete="off"
-                            />
-                            <button type="submit" className="chat__send" aria-label="send" disabled={!input.trim() || busy} data-ready={input.trim().length > 0 && !busy}>
-                                <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" /></svg>
-                            </button>
+                    {limitReached ? (
+                        <div className="chat__limit">
+                            <p>that&apos;s the {MAX_USER_MESSAGES}-message limit for this chat!</p>
+                            <button type="button" onClick={() => void resetChat()}>start a new chat</button>
                         </div>
-                    </form>
+                    ) : (
+                        <>
+                            {remaining <= 3 && remaining > 0 && <div className="chat__remaining">{remaining} message{remaining === 1 ? '' : 's'} left in this chat</div>}
+                        <form className="chat__form" onSubmit={onSubmit}>
+                            <div className="chat__field">
+                                <input
+                                    value={input}
+                                    onChange={(e) => setInput(e.target.value)}
+                                    placeholder="message"
+                                    aria-label="message"
+                                    maxLength={500}
+                                    enterKeyHint="send"
+                                    autoComplete="off"
+                                />
+                                <button type="submit" className="chat__send" aria-label="send" disabled={!input.trim() || busy} data-ready={input.trim().length > 0 && !busy}>
+                                    <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" /></svg>
+                                </button>
+                            </div>
+                        </form>
+                        </>
+                    )}
                 </div>
             </section>
         </main>

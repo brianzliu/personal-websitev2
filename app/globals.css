@@ -111,7 +111,8 @@ a { color: inherit; text-decoration: none; }
 
 /* hoverable phrases: the text itself changes color and the cursor becomes a themed emoji */
 .hl { transition: color 200ms ease; }
-.hl:hover { color: var(--hl-color); cursor: var(--hl-cursor, pointer); }
+.hl[data-lit="true"] { color: var(--hl-color); }
+.hl:hover { cursor: var(--hl-cursor, pointer); }
 .hl-red { --hl-color: #e5484d; }
 .hl-blue { --hl-color: #2f6fed; }
 .hl-gold { --hl-color: #d9a000; }
@@ -215,7 +216,7 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
   mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
 }
 .avatar-slot { visibility: hidden; pointer-events: none; }
-.avatar[data-mode="home"][data-hover="true"] { filter: grayscale(0); }
+.avatar[data-mode="home"][data-lit="true"] { filter: grayscale(0); }
 .avatar[data-mode="home"]:focus-visible { outline: 2px solid var(--foreground); outline-offset: 4px; }
 .avatar[data-mode="fly"], .avatar[data-mode="chat"], .avatar[data-mode="back"] {
   position: fixed;
@@ -364,6 +365,10 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 .sugg[data-left="true"] .sugg__arrow--left, .sugg[data-right="true"] .sugg__arrow--right { pointer-events: auto; }
 .sugg[data-left="true"] .sugg__arrow--left:hover, .sugg[data-right="true"] .sugg__arrow--right:hover { opacity: 1; }
 
+.chat__remaining { padding: 0.5rem 1.25rem 0; color: var(--chat-muted); font-size: 0.72rem; text-align: center; }
+.chat__limit { display: flex; flex-direction: column; align-items: center; gap: 0.6rem; padding: 1rem 1.25rem max(1.25rem, env(safe-area-inset-bottom)); color: var(--chat-muted); font-size: 0.85rem; text-align: center; }
+.chat__limit p { margin: 0; }
+.chat__limit button { cursor: pointer; padding: 0.5rem 1.1rem; border: 0; border-radius: 1.2rem; background: var(--bubble-blue); color: #fff; font: inherit; font-size: 0.9rem; }
 .chat__form { padding: 0.5rem 1.25rem max(1rem, env(safe-area-inset-bottom)); }
 .chat__field { display: flex; align-items: center; gap: 0.4rem; padding: 0.22rem 0.25rem 0.22rem 1rem; border: 1px solid var(--chat-line); border-radius: 1.35rem; }
 .chat__field:focus-within { border-color: #b5b5ba; }
