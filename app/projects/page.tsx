@@ -47,7 +47,7 @@ const projects = [
 export default function ProjectsPage() {
     return (
         <main className="page">
-            <h1><span className="hl hl-yellow">Projects</span></h1>
+            <h1><span className="hl hl-orange hl-rocket">Projects</span></h1>
             <div className="section__body" style={{ marginTop: "2.5rem" }}>
                 {projects.map((project) => (
                     <article key={project.name} className="entry">

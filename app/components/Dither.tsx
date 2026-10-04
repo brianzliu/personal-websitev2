@@ -2,8 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-export type DitherEffect = 'waves' | 'noise' | 'ripple' | 'stripes' | 'plasma' | 'rain' | 'static' | 'cells' | 'topo' | 'spiral' | 'blobs' | 'diamonds' | 'scanlines' | 'sparkle' | 'aurora' | 'tide';
-export type DitherFade = 'none' | 'top' | 'bottom' | 'edges' | 'left' | 'right' | 'lens';
+export type DitherEffect = 'waves' | 'noise' | 'ripple';
 
 const BAYER_BITS = 3;
 const BAYER_SIZE = 1 << BAYER_BITS;
@@ -61,63 +60,6 @@ const FIELDS: Record<DitherEffect, Field> = {
         const d = Math.hypot(x - mx, (y - my) * 1.6);
         return 0.5 + 0.5 * Math.sin(d * 0.22 - t * 2) * Math.exp(-d * 0.008);
     },
-    // Classic plasma: layered sines bent by noise
-    plasma: (x, y, t, mx, my) => {
-        const n = valueNoise(x * 0.03 + t * 0.1, y * 0.03) * 4;
-        return 0.5 + 0.125 * (
-            Math.sin(x * 0.05 + t + n) +
-            Math.sin(y * 0.07 - t * 1.3 + n) +
-            Math.sin((x + y) * 0.04 + t * 0.7) +
-            Math.sin(Math.hypot(x - mx, y - my) * 0.06 - t)
-        ) * 2;
-    },
-    // Falling streaks, each column with its own speed and length
-    rain: (x, y, t) => {
-        const col = Math.floor(x / 2);
-        const speed = 4 + hash(col, 1) * 14;
-        const len = 18 + hash(col, 2) * 50;
-        const head = (((y - t * speed * 3 + hash(col, 3) * 400) % (len * 3)) + len * 3) % (len * 3);
-        return hash(col, 4) > 0.3 && head < len ? Math.pow(1 - head / len, 1.5) : 0;
-    },
-    // Flickering random static
-    static: (x, y, t) => 0.15 + 0.7 * hash(x + Math.floor(t * 14) * 13.1, y + Math.floor(t * 14) * 7.7),
-    // Checker cells that breathe in and out
-    cells: (x, y, t) => 0.5 + 0.5 * Math.sin(x * 0.22 + t * 0.9) * Math.sin(y * 0.22 - t * 0.7 + valueNoise(x * 0.05, y * 0.05) * 6),
-    // Contour lines of drifting terrain
-    topo: (x, y, t) => {
-        const f = 0.65 * valueNoise(x * 0.025 + t * 0.05, y * 0.025) + 0.35 * valueNoise(x * 0.06, y * 0.06 - t * 0.04);
-        const line = Math.abs(((f * 8 - t * 0.15) % 1 + 1) % 1 - 0.5);
-        return 1 - Math.min(1, line * 7);
-    },
-    // Spiral arms turning around the cursor
-    spiral: (x, y, t, mx, my) => 0.5 + 0.5 * Math.sin(Math.atan2(y - my, x - mx) * 3 + Math.hypot(x - mx, y - my) * 0.1 - t * 1.2),
-    // Soft blobs merging and splitting
-    blobs: (x, y, t) => {
-        const f = 0.7 * valueNoise(x * 0.03 + t * 0.12, y * 0.03 - t * 0.06) + 0.3 * valueNoise(x * 0.07 - t * 0.1, y * 0.07);
-        return Math.min(1, Math.max(0, (f - 0.4) * 5));
-    },
-    // Scrolling diamond lattice
-    diamonds: (x, y, t) => {
-        const d = Math.abs(((x + t * 5) % 22) - 11) + Math.abs(((y - t * 3) % 22) - 11);
-        return 1 - d / 22 + 0.1 * valueNoise(x * 0.05, y * 0.05);
-    },
-    // CRT-style scanlines that wobble
-    scanlines: (x, y, t) => 0.5 + 0.5 * Math.sin(y * 0.6 - t * 3) * (0.55 + 0.45 * valueNoise(x * 0.03 + t * 0.2, t * 0.3)),
-    // Sparse twinkling points
-    sparkle: (x, y, t) => {
-        const h = hash(x, y);
-        return h > 0.9 ? 0.5 + 0.5 * Math.sin(t * (1 + h * 3) + h * 60) : 0.04;
-    },
-    // Hanging curtains of light
-    aurora: (x, y, t) => {
-        const sway = valueNoise(x * 0.02 + t * 0.1, t * 0.08) * 6;
-        const curtain = 0.5 + 0.5 * Math.sin(x * 0.06 + sway);
-        return curtain * (0.35 + 0.9 * valueNoise(x * 0.05, y * 0.012 + t * 0.2));
-    },
-    // Rolling swell
-    tide: (x, y, t) => 0.5 + 0.5 * Math.sin(y * 0.15 + Math.sin(x * 0.03 + t) * 3 + valueNoise(x * 0.02, t * 0.2) * 4 - t * 1.5),
-    // Diagonal bands sweeping across
-    stripes: (x, y, t) => 0.5 + 0.5 * Math.sin((x * 0.6 + y) * 0.09 - t * 0.9),
 };
 
 function smooth(a: number, b: number, x: number) {
@@ -125,51 +67,20 @@ function smooth(a: number, b: number, x: number) {
     return t * t * (3 - 2 * t);
 }
 
-function mask(fade: DitherFade, u: number, w: number, start: number) {
-    switch (fade) {
-        case 'top': return Math.pow(1 - u, 1.4);
-        case 'bottom': return Math.pow(u, 1.4);
-        case 'edges': return Math.sin(u * Math.PI);
-        case 'lens': {
-            // thickness shrinks toward both ends, so the band tapers instead of ending in a rectangle
-            const cx = 2 * w - 1;
-            const h = Math.pow(Math.max(0, 1 - cx * cx), 0.55);
-            return smooth(0, 1, 1 - Math.abs(2 * u - 1) / (h + 1e-3));
-        }
-        case 'left': return 1 - smooth(start, 1, w);
-        case 'right': return smooth(0, 1 - start, w);
-        default: return 1;
-    }
+// Thickness shrinks toward both ends, so the band tapers instead of ending in a rectangle
+function lens(u: number, w: number) {
+    const cx = 2 * w - 1;
+    const h = Math.pow(Math.max(0, 1 - cx * cx), 0.22);
+    return smooth(0, 1, 1 - Math.abs(2 * u - 1) / (h + 1e-3));
 }
 
-export default function Dither({
-    effect,
-    fade = 'none',
-    cell = 3,
-    strength = 1,
-    fadeStart = 0.45,
-    speed = 1,
-    levels = 2,
-    interactive = true,
-    className,
-}: {
-    effect: DitherEffect;
-    fade?: DitherFade;
-    cell?: number;
-    strength?: number;
-    fadeStart?: number;
-    speed?: number;
-    levels?: number;
-    interactive?: boolean;
-    className?: string;
-}) {
+const CELL = 3;
+const LEVELS = 4;
+const SPEED = 0.7;
+const CURSOR_REACH = 20;
+
+export default function Dither({ effect, className }: { effect: DitherEffect; className?: string }) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const speedRef = useRef(speed);
-
-    const levelsRef = useRef(levels);
-
-    useEffect(() => { speedRef.current = speed; }, [speed]);
-    useEffect(() => { levelsRef.current = levels; }, [levels]);
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -179,6 +90,7 @@ export default function Dither({
 
         const field = FIELDS[effect];
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const steps = LEVELS - 1;
         const pointer = { x: -1, y: -1 };
         let raf = 0;
         let last = 0;
@@ -189,8 +101,8 @@ export default function Dither({
         let image: ImageData | null = null;
 
         const resize = () => {
-            const w = Math.max(1, Math.ceil(canvas.clientWidth / cell));
-            const h = Math.max(1, Math.ceil(canvas.clientHeight / cell));
+            const w = Math.max(1, Math.ceil(canvas.clientWidth / CELL));
+            const h = Math.max(1, Math.ceil(canvas.clientHeight / CELL));
             canvas.width = w;
             canvas.height = h;
             image = ctx.createImageData(w, h);
@@ -200,21 +112,20 @@ export default function Dither({
             if (!image) return;
             const { width: w, height: h } = canvas;
             const data = image.data;
-            const steps = Math.max(1, levelsRef.current - 1);
             const t = time / 1000;
             const rect = canvas.getBoundingClientRect();
-            const ox = rect.left / cell;
-            const oy = rect.top / cell;
+            const ox = rect.left / CELL;
+            const oy = rect.top / CELL;
+
             const hasPointer = pointer.x >= 0;
-            const px = (pointer.x - rect.left) / cell;
-            const py = (pointer.y - rect.top) / cell;
+            const px = (pointer.x - rect.left) / CELL;
+            const py = (pointer.y - rect.top) / CELL;
             if (hasPointer && amp < 0.05) { sx = px; sy = py; }
             if (hasPointer) { sx += (px - sx) * 0.25; sy += (py - sy) * 0.25; }
             amp += ((hasPointer ? 1 : 0) - amp) * 0.12;
             const mx = hasPointer ? sx : w / 2 + Math.sin(t * 0.3) * w * 0.3;
             const my = hasPointer ? sy : h / 2;
-            const reach = 20;
-            const push = interactive ? amp : 0;
+            const push = reduced ? 0 : amp;
 
             for (let y = 0; y < h; y++) {
                 const u = h > 1 ? y / (h - 1) : 0;
@@ -227,18 +138,19 @@ export default function Dither({
                         // cursor bulges the field outward and thickens the dither around it
                         const dx = x - sx;
                         const dy = y - sy;
-                        const k = Math.exp(-(dx * dx + dy * dy) / (reach * reach)) * push;
+                        const k = Math.exp(-(dx * dx + dy * dy) / (CURSOR_REACH * CURSOR_REACH)) * push;
                         fx = x - dx * k * 0.9;
                         fy = y - dy * k * 0.9;
                         boost = k * 0.35;
                     }
                     const raw = field(fx + ox, fy + oy, t, mx + ox, my + oy) + boost;
-                    const v = Math.min(1, Math.max(0, raw * mask(fade, u, wx, fadeStart) * strength));
-                    const i = (y * w + x) * 4;
-                    // ordered dither between the nearest gray levels: 2 levels = pure black dots, more = smoother shades
+                    const v = Math.min(1, Math.max(0, raw * lens(u, wx)));
+                    // ordered dither between the nearest gray levels
                     const scaled = v * steps;
                     const base = Math.floor(scaled);
-                    const level = base + (scaled - base > BAYER[(y & (BAYER_SIZE - 1)) * BAYER_SIZE + (x & (BAYER_SIZE - 1))] ? 1 : 0);
+                    const threshold = BAYER[(y & (BAYER_SIZE - 1)) * BAYER_SIZE + (x & (BAYER_SIZE - 1))];
+                    const level = base + (scaled - base > threshold ? 1 : 0);
+                    const i = (y * w + x) * 4;
                     data[i] = 17;
                     data[i + 1] = 17;
                     data[i + 2] = 17;
@@ -251,16 +163,16 @@ export default function Dither({
         const loop = (time: number) => {
             raf = requestAnimationFrame(loop);
             if (time - last < 1000 / 30) return;
-            simTime += (time - last) * speedRef.current;
+            simTime += (time - last) * SPEED;
             last = time;
             draw(simTime);
         };
 
-        const onLeave = () => { pointer.x = -1; pointer.y = -1; };
         const onMove = (e: PointerEvent) => {
             pointer.x = e.clientX;
             pointer.y = e.clientY;
         };
+        const onLeave = () => { pointer.x = -1; pointer.y = -1; };
 
         resize();
         draw(0);
@@ -278,7 +190,7 @@ export default function Dither({
             window.removeEventListener('pointermove', onMove);
             document.documentElement.removeEventListener('pointerleave', onLeave);
         };
-    }, [effect, fade, cell, strength, fadeStart, interactive]);
+    }, [effect]);
 
     return <canvas ref={canvasRef} aria-hidden="true" className={`dither ${className ?? ''}`} />;
 }

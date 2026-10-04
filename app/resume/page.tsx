@@ -52,7 +52,7 @@ const experiences = [
 export default function ResumePage() {
     return (
         <main className="page">
-            <h1><span className="hl hl-yellow">Brian Zhou Liu</span></h1>
+            <h1><span className="hl hl-blue hl-page">Brian Zhou Liu</span></h1>
             <p className="muted">
                 New York, NY · <a href="mailto:brianliu0317@gmail.com" className="link">email</a> · <Link href="https://www.linkedin.com/in/brianzliu/" target="_blank" rel="noreferrer" className="link">linkedin</Link> · <Link href="https://github.com/brianzliu" target="_blank" rel="noreferrer" className="link">github</Link> · <Link href="/resume.pdf" target="_blank" className="link">pdf ↗</Link>
             </p>

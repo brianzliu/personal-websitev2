@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import HelveticaNeue from "next/font/local"
 import "./globals.css";
-import SiteChrome from "./components/SiteChrome";
+import Navbar from "./Navbar";
+import DitherDivider from "./components/DitherDivider";
 
 const helvetica_neue = HelveticaNeue({
   src: [
@@ -35,7 +36,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${helvetica_neue.variable} antialiased`}>
-        <SiteChrome>{children}</SiteChrome>
+        <div className="site">
+          <Navbar />
+          <DitherDivider />
+          {children}
+        </div>
       </body>
     </html>
   );

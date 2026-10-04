@@ -4,11 +4,11 @@ export default function Home() {
   return (
     <main className="page">
       <section>
-        <h1>Hey, I&apos;m <span className="hl hl-yellow">Brian Liu</span>.</h1>
-        <p className="lede">I&apos;m a <span className="hl hl-blue">data science student</span> at UCSD.</p>
+        <h1>Hey, I&apos;m <span className="hl hl-red hl-wave">Brian Liu</span>.</h1>
+        <p className="lede">I&apos;m a <span className="hl hl-blue hl-laptop">data science student</span> at <span className="hl hl-gold hl-sun">UCSD</span>.</p>
         <p className="mt-5">
-          I love tinkering with data, software, and research, and you can find me building hackathon projects,
-          training models, or exploring San Diego in the sun.
+          I love tinkering with <span className="hl hl-green hl-science">data, software, and research</span>, and you can find me building hackathon projects,
+          training models, or <span className="hl hl-pink hl-palm">exploring San Diego in the sun</span>.
         </p>
       </section>
 
