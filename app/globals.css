@@ -110,7 +110,7 @@ a { color: inherit; text-decoration: none; }
 ::selection { background: color-mix(in srgb, #fbbc04 55%, white); color: var(--foreground); }
 
 /* hoverable phrases: the text itself changes color and the cursor becomes a themed emoji */
-.hl { transition: color 200ms ease; }
+.hl { transition: color 700ms ease; }
 .hl[data-lit="true"] { color: var(--hl-color); }
 .hl:hover { cursor: var(--hl-cursor, pointer); }
 .hl-red { --hl-color: #e5484d; }
@@ -211,7 +211,7 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
   height: 4.68rem;
   transform: translateY(-45%);
   cursor: pointer;
-  transition: filter 300ms ease;
+  transition: filter 800ms ease;
   -webkit-mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 90%, transparent 100%);
 }
