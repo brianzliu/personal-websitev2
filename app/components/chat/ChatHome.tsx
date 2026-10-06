@@ -529,7 +529,7 @@ export default function ChatHome({ recruiter = false }: { recruiter?: boolean })
                     <div className="section__body">
                         <div className="entry">
                             <div className="entry__head">
-                                <p><Link href="/resume" className="link job__org">Q-Lab, UC San Diego</Link></p>
+                                <p><Link href="https://lianhui.ucsd.edu/index.html" target="_blank" rel="noreferrer" className="link job__org">Q-Lab, UC San Diego</Link></p>
                                 <p className="job__when">Jan 2026–now</p>
                             </div>
                             <p className="job__role">Research Intern</p>
@@ -545,7 +545,7 @@ export default function ChatHome({ recruiter = false }: { recruiter?: boolean })
                         </div>
                         <div className="entry">
                             <div className="entry__head">
-                                <p><Link href="/resume" className="link job__org">Rare AI Lab, UC San Diego</Link></p>
+                                <p><Link href="https://aobol.github.io/AoboLi/" target="_blank" rel="noreferrer" className="link job__org">Rare AI Lab, UC San Diego</Link></p>
                                 <p className="job__when">Sep 2024–Dec 2025</p>
                             </div>
                             <p className="job__role">Research Intern</p>

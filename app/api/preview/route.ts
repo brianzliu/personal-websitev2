@@ -7,7 +7,7 @@ export const maxDuration = 10;
 // fetched, so this can't be used as an open proxy (SSRF). Results are cached in memory.
 const ALLOWED = [
     'brianzliu.com', 'brianliu.io', 'github.com', 'linkedin.com', 'arxiv.org', 'devpost.com', 'goodreads.com',
-    'youtube.com', 'z-lab.ai', 'asakana.co', 'docs.google.com', 'openreview.net', 'ml4physicalsciences.github.io', 'maggiewu.vercel.app',
+    'youtube.com', 'z-lab.ai', 'asakana.co', 'docs.google.com', 'openreview.net', 'ml4physicalsciences.github.io', 'maggiewu.vercel.app', 'lianhui.ucsd.edu', 'aobol.github.io',
 ];
 const hostAllowed = (host: string) => ALLOWED.some((h) => host === h || host.endsWith(`.${h}`));
 

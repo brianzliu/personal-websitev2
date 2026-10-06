@@ -63,7 +63,7 @@ export const ITEMS: ResumeItem[] = [
             { text: 'Applied RESuM, which pairs conditional neural processes with multi-fidelity Gaussian processes, to COHERENT and XENON detector simulations.' },
             { text: 'Co-first author of the NeurIPS 2025 ML4PS workshop paper on COHERENT detector design.' },
         ],
-        links: [{ label: 'ML4PS paper', href: 'https://ml4physicalsciences.github.io/2025/files/NeurIPS_ML4PS_2025_216.pdf' }],
+        links: [{ label: 'Rare AI Lab', href: 'https://aobol.github.io/AoboLi/' }, { label: 'ML4PS paper', href: 'https://ml4physicalsciences.github.io/2025/files/NeurIPS_ML4PS_2025_216.pdf' }],
     },
     {
         id: 'qlab', lane: 'research', name: 'Q-Lab, UC San Diego', short: 'Q-Lab', labelAt: 'inside', icon: FlaskConical, color: C.blue,
@@ -77,7 +77,7 @@ export const ITEMS: ResumeItem[] = [
             { title: 'SIGA', text: 'A Claude Code adapter that configures scientific simulators. I built its ChromaDB retrieval, MCP XML validator and plugin framework. Accepted at NeurIPS 2026; on GEOS it lifted mean TreeSim from 0.720 to 0.789.' },
             { title: 'CellShift', text: 'A seven-dataset benchmark testing whether single-cell temporal models generalize to unseen fates, lineages and starting populations. I curated it, designed the experiments and built the shared evaluation pipeline. Under review at ICLR 2027.' },
         ],
-        links: [{ label: 'SIGA on arXiv', href: 'https://arxiv.org/abs/2606.09774' }],
+        links: [{ label: 'Q-Lab', href: 'https://lianhui.ucsd.edu/index.html' }, { label: 'SIGA on arXiv', href: 'https://arxiv.org/abs/2606.09774' }],
     },
     {
         id: 'asakana', lane: 'work', name: 'Asakana (YC F26)', short: 'Asakana', labelAt: 'right', icon: ShoppingCart, color: C.orange,
