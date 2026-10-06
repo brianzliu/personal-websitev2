@@ -11,16 +11,25 @@ const ALLOWED = [
 ];
 const hostAllowed = (host: string) => ALLOWED.some((h) => host === h || host.endsWith(`.${h}`));
 
-// Sites that block scrapers (or whose own pages have no preview) still get a decent card.
-const FALLBACKS: Record<string, { title: string; description: string }> = {
-    'brianzliu.com': { title: 'Brian Liu', description: 'Data science student at UC San Diego. AI for science, hackathons and research.' },
-    'brianliu.io': { title: 'Brian Liu', description: 'Data science student at UC San Diego. AI for science, hackathons and research.' },
-    'linkedin.com': { title: 'Brian Liu | LinkedIn', description: 'Data science student at UC San Diego.' },
-    'github.com': { title: 'brianzliu on GitHub', description: 'Code and projects by Brian Liu.' },
-    'goodreads.com': { title: 'Brian Liu on Goodreads', description: "What i'm reading." },
-    'youtube.com': { title: 'YouTube', description: 'Brian Liu on YouTube.' },
-    'ml4physicalsciences.github.io': { title: 'Efficient Optimization of COHERENT Detector Design Parameters with RESuM', description: 'NeurIPS 2025 ML4PS workshop paper (PDF).' },
-};
+// Sites that block scrapers (LinkedIn, often Goodreads) still get a decent card. Brian's own profiles are matched by
+// their exact path; anyone else's link on the same site gets a neutral title, never Brian's.
+const OWN: { prefix: string; title: string; description: string }[] = [
+    { prefix: 'linkedin.com/in/brianzliu', title: 'Brian Liu | LinkedIn', description: 'Data science student at UC San Diego.' },
+    { prefix: 'github.com/brianzliu', title: 'brianzliu on GitHub', description: 'Code and projects by Brian Liu.' },
+    { prefix: 'goodreads.com/user/show/156074583', title: 'Brian Liu on Goodreads', description: "What i'm reading." },
+    { prefix: 'youtube.com/@maleepicface9065', title: 'maleepicface on YouTube', description: 'Roblox airline reviews from middle school.' },
+    { prefix: 'ml4physicalsciences.github.io/2025/files/NeurIPS_ML4PS_2025_216.pdf', title: 'Efficient Optimization of COHERENT Detector Design Parameters with RESuM', description: 'NeurIPS 2025 ML4PS workshop paper (PDF).' },
+];
+const SITE_NAMES: Record<string, string> = { 'linkedin.com': 'LinkedIn', 'github.com': 'GitHub', 'goodreads.com': 'Goodreads', 'youtube.com': 'YouTube', 'devpost.com': 'Devpost', 'arxiv.org': 'arXiv' };
+
+function fallbackFor(host: string, path: string) {
+    const where = `${host}${path}`.replace(/\/$/, '');
+    const own = OWN.find((o) => where === o.prefix || where.startsWith(`${o.prefix}/`) || where.startsWith(`${o.prefix}?`));
+    if (own) return { title: own.title, description: own.description };
+    const site = Object.keys(SITE_NAMES).find((h) => host === h || host.endsWith(`.${h}`));
+    if (site === 'linkedin.com' && path.startsWith('/in/')) return { title: 'LinkedIn profile', description: '' };
+    return { title: site ? SITE_NAMES[site] : host, description: '' };
+}
 
 // pages of this site: described directly, no fetch needed
 const SITE_PAGES: Record<string, { title: string; description: string }> = {
@@ -81,8 +90,7 @@ export async function GET(request: Request) {
     const hit = cache.get(key);
     if (hit && Date.now() - hit.at < TTL) return Response.json(hit.data);
 
-    const base = Object.keys(FALLBACKS).find((h) => host === h || host.endsWith(`.${h}`));
-    const fallback = base ? FALLBACKS[base] : { title: host, description: '' };
+    const fallback = fallbackFor(host, target.pathname);
     const data: Preview = { url: key, host, title: fallback.title, description: fallback.description, image: null };
     try {
         const html = await fetchHtml(target);
