@@ -4,7 +4,7 @@
 Brian Zhou Liu (goes by Brian Liu) is a data science student at UC San Diego. He loves tinkering with data, software, and research. You can find him building hackathon projects, training models, or exploring San Diego in the sun.
 
 ## Education
-University of California, San Diego (La Jolla, CA). B.S. in Data Science with an AI & ML specialization. GPA 3.95/4.00. Expected graduation June 2028.
+University of California, San Diego (La Jolla, CA). Started September 2024 after graduating from Great Neck South High School in June 2024; a junior in the 2026-27 school year. B.S. in Data Science with an AI & ML specialization. GPA 3.95/4.00. Expected graduation June 2028.
 
 ## Background
 From Long Island, New York; lived in Great Neck and attended Great Neck South High School, which has a dedicated research program (statistics, paper writing, experiment design). Brian applied in 8th grade and started research over quarantine; his first project (from 9th grade) was a vision model classifying knee injuries from MRI scans. His parents are from China and live in New York.
