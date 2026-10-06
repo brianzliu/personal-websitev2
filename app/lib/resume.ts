@@ -94,7 +94,7 @@ export const ITEMS: ResumeItem[] = [
     {
         id: 'dsc40b', lane: 'teaching', name: 'DSC 40B tutor', short: '40B', labelAt: 'right', emoji: '📚', color: C.green,
         start: [2026, 9], end: [2026, 12],
-        line: 'Algorithm analysis, recurrence relations and graph algorithms, at the Halıcıoğlu Data Science Institute.',
+        line: 'Theoretical Foundations of Data Science II, at the Halıcıoğlu Data Science Institute.',
         notes: [{ text: 'Grading, answering questions and holding office hours.' }],
     },
     {

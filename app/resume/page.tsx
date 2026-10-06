@@ -12,7 +12,6 @@ export default function ResumePage() {
         <main className="page">
             <h1 className="rise"><Hl className="hl-blue" emoji="📄">Brian Zhou Liu</Hl></h1>
             <p className="muted meta rise" style={{ "--i": 1 } as React.CSSProperties}>
-                <span>New York, NY</span>
                 <a href="mailto:brianliu0317@gmail.com" className="link">email</a>
                 <Link href="https://www.linkedin.com/in/brianzliu/" target="_blank" rel="noreferrer" className="link">linkedin</Link>
                 <Link href="https://github.com/brianzliu" target="_blank" rel="noreferrer" className="link">github</Link>
