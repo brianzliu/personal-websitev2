@@ -44,7 +44,7 @@ const SUGGESTIONS = ["what are you working on?", "tell me about your research", 
 const RECRUITER_GREETING = [
     "hey! it's brian, well, the ai version of me 👋",
     "thanks for chatting with me at the ucsd career fair. i hope you enjoyed our conversation as much as i did!",
-    "i'm looking for an internship for summer 2027 (spring works too). keep chatting with me here, or explore my https://brianzliu.com/projects, https://brianzliu.com/resume or https://brianzliu.com/ on your own.",
+    "i'm currently looking for summer 2027 internships, and i'd also be glad to hear about spring 2027 roles. feel free to keep chatting with me here, or explore my https://brianzliu.com/projects, https://brianzliu.com/resume or https://brianzliu.com/ on your own.",
 ];
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

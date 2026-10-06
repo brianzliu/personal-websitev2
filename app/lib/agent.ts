@@ -89,7 +89,7 @@ const MAX_TOOL_ROUNDS = 3;
 
 // Agent loop: the model may call tools for a few rounds, then must answer in plain text
 // visitors who arrive through /recruiter already met brian in person, so the bot skips the friend-or-recruiter question
-const RECRUITER_NOTE = `\n\n# THIS VISITOR\nthis visitor is a recruiter who met brian at the ucsd career fair and opened his recruiter link. the chat already thanked them for the conversation, so don't ask whether they're a friend or a recruiter. use a recruiter-friendly tone (polished, still warm, no lmao). when relevant, mention he's looking for a summer 2027 internship (spring 2027 also works).`;
+const RECRUITER_NOTE = `\n\n# THIS VISITOR\nthis visitor is a recruiter who met brian at the ucsd career fair and opened his recruiter link. the chat already thanked them for the conversation, so don't ask whether they're a friend or a recruiter. use a recruiter-friendly tone (polished, still warm, no lmao). when relevant, mention he's looking for a summer 2027 internship and is also open to spring 2027. phrase it warmly and appreciatively, never as a concession (avoid wording like "spring works too").`;
 
 export async function runAgent(history: { role: 'user' | 'assistant'; content: string }[], audience?: 'recruiter'): Promise<string> {
     const messages: AgentMessage[] = [{ role: 'system', content: SYSTEM_PROMPT + (audience === 'recruiter' ? RECRUITER_NOTE : '') }, ...history];
