@@ -1,3 +1,5 @@
+import { Atom, Award, BookOpen, FlaskConical, GraduationCap, HeartPulse, ShoppingCart, Trophy, type LucideIcon } from 'lucide-react';
+
 // Everything on the resume, shaped for the timeline on /resume.
 // Bars have a start and an end ('now' for ongoing); dots only have a start.
 
@@ -10,7 +12,7 @@ export type ResumeItem = {
     name: string;
     short?: string; // label drawn on/next to the bar or dot
     labelAt?: 'inside' | 'right' | 'left';
-    emoji: string;
+    icon: LucideIcon;
     color: string;
     start: YM;
     end?: YM | 'now';
@@ -37,7 +39,7 @@ const C = { blue: '#2f6fed', purple: '#8b5cf6', red: '#e5484d', orange: '#f0771a
 
 export const ITEMS: ResumeItem[] = [
     {
-        id: 'ucsd', lane: 'school', name: 'UC San Diego', short: 'UC San Diego', labelAt: 'inside', emoji: '🎓', color: C.gold,
+        id: 'ucsd', lane: 'school', name: 'UC San Diego', short: 'UC San Diego', labelAt: 'inside', icon: GraduationCap, color: C.gold,
         start: [2024, 9], end: [2028, 6],
         line: 'B.S. in Data Science with an AI & ML specialization. Graduating June 2028.',
         notes: [
@@ -46,14 +48,14 @@ export const ITEMS: ResumeItem[] = [
         ],
     },
     {
-        id: 'maix', lane: 'research', name: 'MAIX Lab, Emory University', short: 'MAIX Lab', labelAt: 'inside', emoji: '🫀', color: C.red,
+        id: 'maix', lane: 'research', name: 'MAIX Lab, Emory University', short: 'MAIX Lab', labelAt: 'inside', icon: HeartPulse, color: C.red,
         start: [2023, 3], end: [2023, 11],
         line: 'Research intern with Prof. Ran Xiao, remote, while I was in high school.',
         stats: [{ value: '0.937', label: 'AUC screening for heart attacks from 12-lead ECG' }, { value: '85.5%', label: 'sensitivity' }],
         notes: [{ text: 'Anatomically informed XResNet features plus cross-lead 1D convolutions. Became a clinical abstract at MLHC 2023.' }],
     },
     {
-        id: 'rare', lane: 'research', name: 'Rare AI Lab, UC San Diego', short: 'Rare AI Lab', labelAt: 'inside', emoji: '⚛️', color: C.purple,
+        id: 'rare', lane: 'research', name: 'Rare AI Lab, UC San Diego', short: 'Rare AI Lab', labelAt: 'inside', icon: Atom, color: C.purple,
         start: [2024, 9], end: [2025, 12],
         line: 'Undergraduate researcher with Prof. Aobo Li, from my first quarter at UCSD.',
         stats: [{ value: '90%', label: 'less simulation cost' }, { value: 'r = 0.880', label: 'on held-out detector designs' }],
@@ -64,7 +66,7 @@ export const ITEMS: ResumeItem[] = [
         links: [{ label: 'ML4PS paper', href: 'https://ml4physicalsciences.github.io/2025/files/NeurIPS_ML4PS_2025_216.pdf' }],
     },
     {
-        id: 'qlab', lane: 'research', name: 'Q-Lab, UC San Diego', short: 'Q-Lab', labelAt: 'inside', emoji: '🔬', color: C.blue,
+        id: 'qlab', lane: 'research', name: 'Q-Lab, UC San Diego', short: 'Q-Lab', labelAt: 'inside', icon: FlaskConical, color: C.blue,
         start: [2026, 1], end: [2028, 6],
         line: 'Undergraduate researcher with Prof. Lianhui Qin, working on AI for science.',
         stats: [
@@ -78,7 +80,7 @@ export const ITEMS: ResumeItem[] = [
         links: [{ label: 'SIGA on arXiv', href: 'https://arxiv.org/abs/2606.09774' }],
     },
     {
-        id: 'asakana', lane: 'work', name: 'Asakana (YC F26)', short: 'Asakana', labelAt: 'right', emoji: '🛒', color: C.orange,
+        id: 'asakana', lane: 'work', name: 'Asakana (YC F26)', short: 'Asakana', labelAt: 'right', icon: ShoppingCart, color: C.orange,
         start: [2025, 10], end: [2026, 2],
         line: 'Product development intern at a YC startup, remote.',
         stats: [{ value: '10,000+', label: 'supplier products moved from PDFs and spreadsheets into MongoDB' }],
@@ -86,50 +88,50 @@ export const ITEMS: ResumeItem[] = [
         links: [{ label: 'asakana.co', href: 'https://asakana.co/' }],
     },
     {
-        id: 'dsc40a', lane: 'teaching', name: 'DSC 40A instructional assistant', short: '40A', labelAt: 'left', emoji: '📚', color: C.green,
+        id: 'dsc40a', lane: 'teaching', name: 'DSC 40A instructional assistant', short: '40A', labelAt: 'left', icon: BookOpen, color: C.green,
         start: [2026, 4], end: [2026, 6],
         line: 'Theoretical Foundations of Data Science I, at the Halıcıoğlu Data Science Institute.',
         notes: [{ text: 'Graded homework and exams, answered questions and held office hours.' }],
     },
     {
-        id: 'dsc40b', lane: 'teaching', name: 'DSC 40B tutor', short: '40B', labelAt: 'right', emoji: '📚', color: C.green,
+        id: 'dsc40b', lane: 'teaching', name: 'DSC 40B tutor', short: '40B', labelAt: 'right', icon: BookOpen, color: C.green,
         start: [2026, 9], end: [2026, 12],
         line: 'Theoretical Foundations of Data Science II, at the Halıcıoğlu Data Science Institute.',
         notes: [{ text: 'Grading, answering questions and holding office hours.' }],
     },
     {
-        id: 'p-mlhc', lane: 'papers', name: 'Enhancing Deep Learning in Detecting Acute Myocardial Infarction via Anatomically Informed 12-Lead ECG', short: 'MLHC', labelAt: 'right', emoji: '🫀', color: C.red,
+        id: 'p-mlhc', lane: 'papers', name: 'Enhancing Deep Learning in Detecting Acute Myocardial Infarction via Anatomically Informed 12-Lead ECG', short: 'MLHC', labelAt: 'right', icon: HeartPulse, color: C.red,
         start: [2023, 8],
         line: 'Machine Learning for Healthcare (MLHC) 2023, clinical abstract',
         notes: [{ text: 'Zègre-Hemsey, J., Ding, C., Liu, B., Wright, D., Al-Zaiti, S., Hu, X., & Xiao, R.' }],
     },
     {
-        id: 'p-resum', lane: 'papers', name: 'Efficient Optimization of COHERENT Detector Design Parameters with the Rare Event Surrogate Model (RESuM)', short: 'ML4PS', labelAt: 'left', emoji: '⚛️', color: C.purple,
+        id: 'p-resum', lane: 'papers', name: 'Efficient Optimization of COHERENT Detector Design Parameters with the Rare Event Surrogate Model (RESuM)', short: 'ML4PS', labelAt: 'left', icon: Atom, color: C.purple,
         start: [2025, 12],
         line: 'NeurIPS 2025 Workshop on Machine Learning and the Physical Sciences',
         notes: [{ text: 'Liu, B.*, Simonaitis-Boyd, S.*, Schuetz, A.-K., Li, A., & Li, Z.' }, { text: '*Equal contribution.' }],
         links: [{ label: 'Paper', href: 'https://ml4physicalsciences.github.io/2025/files/NeurIPS_ML4PS_2025_216.pdf' }],
     },
     {
-        id: 'p-siga', lane: 'papers', name: 'Auto-Configuring Scientific Simulators with Lightweight Coding-Agent Adapters', short: 'NeurIPS', labelAt: 'left', emoji: '🔬', color: C.blue,
+        id: 'p-siga', lane: 'papers', name: 'Auto-Configuring Scientific Simulators with Lightweight Coding-Agent Adapters', short: 'NeurIPS', labelAt: 'left', icon: FlaskConical, color: C.blue,
         start: [2026, 12],
         line: 'NeurIPS 2026',
         notes: [{ text: 'Ho, M., Liu, B., Chen, J., Wang, A., & Qin, L.' }],
         links: [{ label: 'arXiv', href: 'https://arxiv.org/abs/2606.09774' }],
     },
     {
-        id: 'p-cellshift', lane: 'papers', name: 'CellShift: Benchmarking Single-Cell Temporal Models on Unseen Biology', short: 'ICLR', labelAt: 'right', emoji: '🧬', color: C.teal, hollow: true,
+        id: 'p-cellshift', lane: 'papers', name: 'CellShift: Benchmarking Single-Cell Temporal Models on Unseen Biology', short: 'ICLR', labelAt: 'right', icon: FlaskConical, color: C.teal, hollow: true,
         start: [2027, 4],
         line: 'ICLR 2027, under review',
         notes: [{ text: 'Liu, B., Liu, J., Wang, Z. A., Jambor, A. N., Wang, W., & Qin, L.' }],
     },
     {
-        id: 'h-regeneron', lane: 'honors', name: 'Regeneron Science Talent Search', short: 'Regeneron', labelAt: 'right', emoji: '🏅', color: C.gold,
+        id: 'h-regeneron', lane: 'honors', name: 'Regeneron Science Talent Search', short: 'Regeneron', labelAt: 'right', icon: Award, color: C.gold,
         start: [2024, 1],
         line: 'Top 300 Scholar, 2024, for my ECG research at Emory.',
     },
     {
-        id: 'hackathons', lane: 'honors', name: 'Hackathons', short: '6 hackathons', labelAt: 'right', emoji: '🏆', color: C.orange,
+        id: 'hackathons', lane: 'honors', name: 'Hackathons', short: '6 hackathons', labelAt: 'right', icon: Trophy, color: C.orange,
         start: [2025, 3.6], end: [2026, 1.6],
         line: 'Awards at six hackathons in ten months. Pick one to see what we built.',
         cluster: [

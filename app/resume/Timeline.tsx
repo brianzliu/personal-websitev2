@@ -2,7 +2,6 @@
 
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
-import { emojiCursor } from '../components/Hl';
 import { ITEMS, LANES, type Hackathon, type ResumeItem, type YM } from '../lib/resume';
 import { projects } from '../lib/projects';
 
@@ -55,8 +54,8 @@ function HackathonList({ events }: { events: Hackathon[] }) {
                 const isOpen = open === h.id;
                 return (
                     <div key={h.id} className="hk__item" data-open={isOpen} style={{ '--c': p?.color ?? '#888' } as React.CSSProperties}>
-                        <button type="button" className="hk__row" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : h.id)} style={{ cursor: emojiCursor(p?.emoji ?? '🏆') }}>
-                            <span className="hk__emoji" aria-hidden="true">{p?.emoji}</span>
+                        <button type="button" className="hk__row" aria-expanded={isOpen} onClick={() => setOpen(isOpen ? null : h.id)}>
+                            <span className="hk__emoji" aria-hidden="true">{p && <p.icon size={17} strokeWidth={1.75} />}</span>
                             <span className="hk__text">
                                 <span className="hk__event">{h.event}<span className="hk__date">{fmt(h.date)}</span></span>
                                 <span className="hk__awards">{h.awards.join(', ')}</span>
@@ -78,7 +77,7 @@ function HackathonList({ events }: { events: Hackathon[] }) {
     );
 }
 
-// papers read like a citation: the title, then authors (my name in bold) followed by the venue in italics. No emoji here.
+// papers read like a citation: the title, then authors (my name in bold) followed by the venue in italics. No icon here.
 function PaperPanel({ item }: { item: ResumeItem }) {
     const authors = item.notes?.[0]?.text ?? '';
     const parts = authors.split(/(Liu, B\.\*?)/);
@@ -110,7 +109,7 @@ function Panel({ item }: { item: ResumeItem | null }) {
     if (item.lane === 'papers') return <PaperPanel item={item} />;
     return (
         <div className="tl-panel" key={item.id} style={{ '--c': item.color } as React.CSSProperties}>
-            <p className="tl-panel__name"><span className="tl-panel__emoji" aria-hidden="true">{item.emoji}</span>{item.name}</p>
+            <p className="tl-panel__name"><span className="tl-panel__icon" aria-hidden="true"><item.icon size={18} strokeWidth={1.8} /></span>{item.name}</p>
             <p className="tl-panel__line">{item.line}</p>
             {item.stats && (
                 <div className="tl-stats">
@@ -174,7 +173,7 @@ export default function Timeline({ now }: { now: YM }) {
                                         onPointerEnter: (e: React.PointerEvent) => { if (e.pointerType === 'mouse') setShownId(item.id); },
                                         onClick: (e: React.MouseEvent) => pick(item.id, (e.nativeEvent as PointerEvent).pointerType === 'touch'),
                                     };
-                                    const style = { '--c': item.color, cursor: emojiCursor(item.emoji) } as React.CSSProperties;
+                                    const style = { '--c': item.color } as React.CSSProperties;
                                     if (!end) {
                                         return (
                                             <button key={item.id} {...common} className="tl__dot" data-hollow={!!item.hollow} style={{ ...style, left: pct(item.start) }}>
