@@ -65,7 +65,7 @@ export const ITEMS: ResumeItem[] = [
     },
     {
         id: 'qlab', lane: 'research', name: 'Q-Lab, UC San Diego', short: 'Q-Lab', labelAt: 'inside', emoji: '🔬', color: C.blue,
-        start: [2026, 1], end: 'now',
+        start: [2026, 1], end: [2028, 6],
         line: 'Undergraduate researcher with Prof. Lianhui Qin, working on AI for science.',
         stats: [
             { value: '0.870', label: 'best SIGA score on 30 OpenFOAM tasks, all 30 completed' },
@@ -93,7 +93,7 @@ export const ITEMS: ResumeItem[] = [
     },
     {
         id: 'dsc40b', lane: 'teaching', name: 'DSC 40B tutor', short: '40B', labelAt: 'right', emoji: '📚', color: C.green,
-        start: [2026, 9], end: 'now',
+        start: [2026, 9], end: [2026, 12],
         line: 'Algorithm analysis, recurrence relations and graph algorithms, at the Halıcıoğlu Data Science Institute.',
         notes: [{ text: 'Grading, answering questions and holding office hours.' }],
     },
