@@ -1,6 +1,7 @@
 const BASE = process.env.OPENROUTER_BASE_URL ?? 'https://openrouter.ai/api/v1';
 
 export const CHAT_MODEL = process.env.OPENROUTER_MODEL ?? '~deepseek/deepseek-flash-latest';
+export const FALLBACK_MODEL = process.env.OPENROUTER_FALLBACK_MODEL ?? 'xiaomi/mimo-v2.6-pro';
 export const EMBEDDING_MODEL = process.env.OPENROUTER_EMBEDDING_MODEL ?? 'voyageai/voyage-4-lite';
 
 export type ToolCall = { id: string; type: 'function'; function: { name: string; arguments: string } };
@@ -31,16 +32,29 @@ export async function chatCompletion(body: {
     max_tokens?: number;
     temperature?: number;
 }) {
-    const res = await fetch(`${BASE}/chat/completions`, {
-        method: 'POST',
-        headers: headers(),
-        body: JSON.stringify({ model: CHAT_MODEL, ...body }),
-    });
-    if (!res.ok) throw new Error(`OpenRouter chat failed: ${res.status} ${await res.text()}`);
-    const json = (await res.json()) as {
-        choices: { message: { content: string | null; tool_calls?: ToolCall[] } }[];
-    };
-    return json.choices[0].message;
+    // try the primary model first; if it errors or times out, retry once on the fallback
+    let lastError: unknown;
+    for (const model of [CHAT_MODEL, FALLBACK_MODEL]) {
+        try {
+            const res = await fetch(`${BASE}/chat/completions`, {
+                method: 'POST',
+                headers: headers(),
+                body: JSON.stringify({ model, ...body }),
+                signal: AbortSignal.timeout(model === CHAT_MODEL ? 15_000 : 20_000),
+            });
+            if (!res.ok) throw new Error(`OpenRouter chat failed (${model}): ${res.status} ${await res.text()}`);
+            const json = (await res.json()) as {
+                choices?: { message: { content: string | null; tool_calls?: ToolCall[] } }[];
+            };
+            const message = json.choices?.[0]?.message;
+            if (!message) throw new Error(`OpenRouter returned no choices (${model})`);
+            return message;
+        } catch (error) {
+            lastError = error;
+            console.error('chat model failed, trying next', error);
+        }
+    }
+    throw lastError;
 }
 
 export async function embed(input: string): Promise<number[]> {

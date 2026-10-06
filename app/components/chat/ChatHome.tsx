@@ -2,9 +2,11 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import Hl, { LIT_MS } from '../Hl';
+import { useRouter } from 'next/navigation';
+import Hl, { LIT_MS, emojiCursor } from '../Hl';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react';
-import { MAX_USER_MESSAGES } from '../../lib/limits';
+import { MAX_USER_MESSAGES, PUSHBACK } from '../../lib/limits';
+import LinkCard, { URL_RE } from './LinkCard';
 
 type Role = 'user' | 'assistant';
 type Message = { id: number; role: Role; content: string; local?: boolean };
@@ -37,7 +39,65 @@ const GREETING = [
 ];
 const SUGGESTIONS = ["what are you working on?", "tell me about your research", "what projects have you built?", "how can i reach you?"];
 
+// /recruiter: the link handed out at career fairs. The visitor lands straight in the chat with a thank-you;
+// the last line links to the site's pages inline (rendered as named links, see SITE_PAGES).
+const RECRUITER_GREETING = [
+    "hey! it's brian, well, the ai version of me 👋",
+    "thanks for chatting with me at the ucsd career fair. i hope you enjoyed our conversation as much as i did!",
+    "i'm looking for an internship for summer 2027 (spring works too). keep chatting with me here, or explore my https://brianzliu.com/projects, https://brianzliu.com/resume or https://brianzliu.com/ on your own.",
+];
+
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// pages of this site are named inline (with the same emoji cursor as that page's heading) instead of getting a preview card
+const SITE_PAGES: Record<string, { label: string; emoji: string }> = {
+    '/': { label: 'homepage', emoji: '👋' },
+    '/projects': { label: 'projects', emoji: '🚀' },
+    '/resume': { label: 'resume', emoji: '📄' },
+    '/resume.pdf': { label: 'resume (pdf)', emoji: '📄' },
+    '/blog': { label: 'blog', emoji: '✏️' },
+};
+function sitePage(url: string) {
+    try {
+        const u = new URL(url);
+        if (!['brianzliu.com', 'www.brianzliu.com', 'brianliu.io', 'www.brianliu.io'].includes(u.hostname)) return null;
+        const page = SITE_PAGES[u.pathname.replace(/(.)\/$/, '$1')];
+        return page ? { ...page, path: u.pathname } : null;
+    } catch { return null; }
+}
+const isOwnSite = (url: string) => sitePage(url) !== null;
+
+// plain-text urls in a bubble become tappable links; this site's pages become named inline links
+function linkify(text: string, onSitePage?: (path: string) => void) {
+    const parts: React.ReactNode[] = [];
+    let last = 0;
+    for (const m of text.matchAll(URL_RE)) {
+        parts.push(text.slice(last, m.index));
+        const page = sitePage(m[0]);
+        parts.push(page
+            ? <a key={m.index} href={page.path} target={onSitePage ? undefined : '_blank'} rel="noreferrer" className="sitelink" style={{ '--hl-cursor': emojiCursor(page.emoji) } as React.CSSProperties}
+                onClick={onSitePage ? (e) => { e.preventDefault(); onSitePage(page.path); } : undefined}>{page.label}</a>
+            : <a key={m.index} href={m[0]} target="_blank" rel="noreferrer" className="bubble__link">{m[0]}</a>);
+        last = m.index + m[0].length;
+    }
+    parts.push(text.slice(last));
+    return parts;
+}
+
+// Hand-drawn arrow from the end of the "chat with an AI version of me" phrase to the photo. It runs along the phrase's own (empty)
+// line, up the right margin outside the text column, and in to the photo, so it never crosses the paragraph. The wobble comes
+// from an SVG displacement filter. Returns null when there's no margin to run up (narrow windows), and the label shows instead.
+function scribbleArrow(from: DOMRect, to: DOMRect, textRight: number) {
+    const lane = textRight + 26;
+    if (window.innerWidth - lane < 24) return null;
+    const ax = from.right + 8, ay = from.top + from.height * 0.55;
+    const dx = to.right + 12, dy = to.top + to.height * 0.55;
+    const r = Math.max(8, Math.min(40, (ay - dy) / 2));
+    const f = (n: number) => n.toFixed(1);
+    const line = `M${f(ax)} ${f(ay)} L${f(lane - r)} ${f(ay + 1.5)} Q${f(lane)} ${f(ay)} ${f(lane)} ${f(ay - r)} L${f(lane - 2)} ${f(dy + r)} Q${f(lane)} ${f(dy)} ${f(lane - r)} ${f(dy - 1)} L${f(dx)} ${f(dy)}`;
+    const head = `M${f(dx + 11)} ${f(dy - 8)} L${f(dx)} ${f(dy)} L${f(dx + 12)} ${f(dy + 6)}`;
+    return { line, head };
+}
+
 const toBox = (r: DOMRect): Box => ({ left: r.left, top: r.top, width: r.width, height: r.height });
 
 function Suggestions({ items, onPick }: { items: string[]; onPick: (s: string) => void }) {
@@ -76,7 +136,10 @@ function Suggestions({ items, onPick }: { items: string[]; onPick: (s: string) =
     );
 }
 
-export default function ChatHome() {
+export default function ChatHome({ recruiter = false }: { recruiter?: boolean }) {
+    const router = useRouter();
+    const greetingLines = recruiter ? RECRUITER_GREETING : GREETING;
+    const [exiting, setExiting] = useState(false);
     const [phase, setPhase] = useState<Phase>('home');
     const [messages, setMessages] = useState<Message[]>([]);
     const [revealed, setRevealed] = useState<Record<number, number>>({}); // characters shown so far for streaming messages
@@ -89,6 +152,8 @@ export default function ChatHome() {
     const [input, setInput] = useState('');
     const [stamp, setStamp] = useState('');
     const [hovered, setHovered] = useState(false);
+    const [arrow, setArrow] = useState<{ line: string; head: string } | null>(null); // scribbled arrow from the "chat with an AI version of me" text to the photo
+    const ctaRef = useRef<HTMLButtonElement>(null);
     const [lit, setLit] = useState(false); // photo stays in color for LIT_MS (5s) after being hovered
     const litTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
     const [hoverFrame, setHoverFrame] = useState(0);
@@ -109,6 +174,26 @@ export default function ChatHome() {
         alive.current = true;
         return () => { alive.current = false; clearTimeout(litTimer.current); };
     }, []);
+
+    // hovering the photo, or the "chat with an AI version of me" phrase, colors the photo and shows the chat-with-me label
+    const hoverOn = useCallback(() => {
+        setHovered(true);
+        setLit(true);
+        clearTimeout(litTimer.current);
+        litTimer.current = setTimeout(() => setLit(false), LIT_MS);
+    }, []);
+    const hoverOff = useCallback(() => { setHovered(false); setArrow(null); }, []);
+
+    // hovering the phrase instead of the photo: color the photo, but point at it with a hand-drawn arrow rather than the label
+    const hoverPhrase = useCallback(() => {
+        hoverOn();
+        const from = ctaRef.current?.getBoundingClientRect();
+        const to = avatarRef.current?.getBoundingClientRect();
+        const column = ctaRef.current?.closest('.home__content');
+        if (!from || !to || !column) return;
+        const textRight = column.getBoundingClientRect().right - parseFloat(getComputedStyle(column).paddingRight);
+        setArrow(scribbleArrow(from, to, textRight));
+    }, [hoverOn]);
 
     // stop-motion while hovering the photo (mouse only)
     useEffect(() => {
@@ -208,10 +293,13 @@ export default function ChatHome() {
         setMessages((m) => [...m, { id, role: 'assistant', content: text, local }]);
         setRevealed((r) => ({ ...r, [id]: 1 }));
         setTalking(true);
+        const urls = [...text.matchAll(URL_RE)].map((m) => ({ start: m.index, end: m.index + m[0].length }));
         for (let n = 1; n < text.length; ) {
             await wait(28);
             if (!alive.current || session.current !== my) return;
             n = Math.min(text.length, n + 2 + Math.floor(Math.random() * 2));
+            if (/[\uD800-\uDBFF]/.test(text[n - 1] ?? '')) n++; // never cut an emoji in half
+            for (const u of urls) if (n > u.start && n < u.end) n = u.end; // links appear whole, never as half-typed urls
             setRevealed((r) => ({ ...r, [id]: n }));
         }
         setRevealed((r) => { const rest = { ...r }; delete rest[id]; return rest; });
@@ -222,7 +310,7 @@ export default function ChatHome() {
     const nowStamp = () => new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).toLowerCase();
 
     const playGreeting = useCallback(async (my: number) => {
-        for (const line of GREETING) {
+        for (const line of greetingLines) {
             if (!alive.current || session.current !== my) return;
             setTyping(true);
             await wait(900);
@@ -231,8 +319,22 @@ export default function ChatHome() {
             await streamAssistant(line, true, my);
             await wait(250);
         }
-    }, [streamAssistant]);
+    }, [streamAssistant, greetingLines]);
 
+    // leave the chat for another page: the window fades down first, then the next page rises in
+    const leaveTo = useCallback((path: string) => {
+        setExiting(true);
+        setTimeout(() => router.push(path), 320);
+    }, [router]);
+
+    // recruiter link: the photo flies straight from its spot into the chat, no click needed
+    useEffect(() => {
+        if (!recruiter) return;
+        const id = setTimeout(() => void startChatRef.current?.(), 450);
+        return () => clearTimeout(id);
+    }, [recruiter]);
+
+    const startChatRef = useRef<() => Promise<void>>(undefined);
     const startChat = useCallback(async () => {
         if (started.current || !avatarRef.current) return; // guards against double-starts (double click, hot reload)
         started.current = true;
@@ -249,6 +351,7 @@ export default function ChatHome() {
         await wait(200);
         await playGreeting(my);
     }, [playGreeting]);
+    useEffect(() => { startChatRef.current = startChat; }, [startChat]);
 
     // used when the conversation hits its message limit: clear it and say hi again without leaving the chat
     const resetChat = useCallback(async () => {
@@ -263,6 +366,7 @@ export default function ChatHome() {
     // reverse of startChat: chat fades out, the avatar glides back to its home spot, the home text returns
     const goHome = useCallback(async () => {
         if (phaseRef.current !== 'chat') return;
+        if (recruiter) { leaveTo('/'); return; }
         const my = ++session.current;
         window.scrollTo(0, 0);
         setHovered(false);
@@ -276,7 +380,7 @@ export default function ChatHome() {
         if (!alive.current || session.current !== my) return;
         started.current = false;
         setPhase('home');
-    }, []);
+    }, [recruiter, leaveTo]);
 
     async function send(text: string) {
         const content = text.trim();
@@ -294,20 +398,28 @@ export default function ChatHome() {
         if (session.current !== my) return;
         setTyping(true);
 
+        let pushback = false; // a rejected message and its canned reply stay out of the history sent next
         let reply = "something went wrong on my end. try again in a sec!";
         try {
             const [res] = await Promise.all([
-                fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history }) }),
+                fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: history, audience: recruiter ? 'recruiter' : undefined }) }),
                 wait(900),
             ]);
-            const data = (await res.json()) as { reply?: string; error?: string };
+            const data = (await res.json()) as { reply?: string; error?: string; limit?: string };
             reply = data.reply ?? data.error ?? reply;
+            pushback = data.limit === 'too-long' || data.limit === 'busy';
         } catch { /* keep the fallback message */ }
 
         if (session.current !== my) return;
         setTyping(false);
         setThinking(false);
-        await streamAssistant(reply, false, my);
+        if (pushback) setMessages((m) => m.map((x) => (x.id === userMessage.id ? { ...x, local: true } : x)));
+        await streamAssistant(reply, pushback, my);
+        // the last allowed message gets a friendly sign-off before the composer swaps to "start a new chat"
+        if (session.current === my && messages.filter((m) => m.role === 'user').length + 1 >= MAX_USER_MESSAGES) {
+            await wait(600);
+            if (session.current === my) await streamAssistant(PUSHBACK.sessionLimit, true, my);
+        }
         if (session.current === my) setBusy(false);
     }
 
@@ -336,7 +448,14 @@ export default function ChatHome() {
     const mode = phase === 'home' ? 'home' : phase === 'leaving' ? 'fly' : phase === 'returning' ? 'back' : 'chat';
 
     return (
-        <main className="home" data-phase={phase}>
+        <main className="home" data-phase={phase} data-recruiter={recruiter} data-exit={exiting}>
+            {arrow && phase === 'home' && (
+                <svg className="scribble" aria-hidden="true">
+                    <filter id="scribble-wobble"><feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" /><feDisplacementMap in="SourceGraphic" scale="3" /></filter>
+                    <path d={arrow.line} pathLength={1} />
+                    <path d={arrow.head} pathLength={1} className="scribble__head" />
+                </svg>
+            )}
             <div className="home__content">
                 <section className="intro">
                     <div className="intro__title">
@@ -344,7 +463,7 @@ export default function ChatHome() {
                             Hey, I&apos;m <Hl className="hl-red hl-wave">Brian Liu</Hl>.
                         </h1>
 
-                        <div className="chat-label fade" data-hover={hovered} style={{ '--i': 0 } as React.CSSProperties} aria-hidden="true">
+                        <div className="chat-label fade" data-hover={hovered && !arrow} style={{ '--i': 0 } as React.CSSProperties} aria-hidden="true">
                             <span>chat with me</span> <small>(beta)</small>
                         </div>
 
@@ -361,14 +480,8 @@ export default function ChatHome() {
                             aria-label={phase === 'home' ? 'chat with me (beta)' : undefined}
                             onClick={() => void startChat()}
                             onKeyDown={onAvatarKey}
-                            onPointerEnter={(e) => {
-                                if (e.pointerType === 'touch') return;
-                                setHovered(true);
-                                setLit(true);
-                                clearTimeout(litTimer.current);
-                                litTimer.current = setTimeout(() => setLit(false), LIT_MS);
-                            }}
-                            onPointerLeave={(e) => { if (e.pointerType !== 'touch') setHovered(false); }}
+                            onPointerEnter={(e) => { if (e.pointerType !== 'touch') hoverOn(); }}
+                            onPointerLeave={(e) => { if (e.pointerType !== 'touch') hoverOff(); }}
                         >
                             {(Object.keys(FACES) as Face[]).map((key) => (
                                 <Image
@@ -392,24 +505,51 @@ export default function ChatHome() {
                         I love tinkering with <Hl className="hl-green hl-science">data, software, and research</Hl>, and you can find me building hackathon projects,
                         training models, or <Hl className="hl-pink hl-palm">exploring San Diego in the sun</Hl>.
                     </p>
+                    <p className="mt-5 fade" style={{ '--i': 2 } as React.CSSProperties}>
+                        If you want to know more about me, take a look around the site, or{' '}
+                        <span className="nowrap">
+                        <button
+                            type="button"
+                            ref={ctaRef}
+                            className="chat-cta"
+                            data-lit={lit}
+                            onClick={() => void startChat()}
+                            onPointerEnter={(e) => { if (e.pointerType !== 'touch') hoverPhrase(); }}
+                            onPointerLeave={(e) => { if (e.pointerType !== 'touch') hoverOff(); }}
+                            onFocus={hoverPhrase}
+                            onBlur={hoverOff}
+                        >
+                            chat with an AI version of me
+                        </button>.</span>
+                    </p>
                 </section>
 
                 <section className="section fade" style={{ '--i': 3 } as React.CSSProperties}>
                     <h2>Work</h2>
                     <div className="section__body">
                         <div className="entry">
-                            <p>Research Intern at <Link href="/resume" className="link">Q-Lab, UC San Diego</Link></p>
-                            <p className="muted">Jan. 2026 – Present</p>
-                            <p>Building and evaluating AI systems for scientific simulation and single-cell forecasting.</p>
+                            <div className="entry__head">
+                                <p><Link href="/resume" className="link job__org">Q-Lab, UC San Diego</Link></p>
+                                <p className="job__when">Jan 2026–now</p>
+                            </div>
+                            <p className="job__role">Research Intern</p>
+                            <p className="job__what">Building and evaluating AI systems for scientific simulation and single-cell forecasting.</p>
                         </div>
                         <div className="entry">
-                            <p>Product Development Intern at <span className="text-neutral-900">Asakana (YC F26)</span></p>
-                            <p className="muted">Oct. 2025 – Feb. 2026</p>
-                            <p>Automated supplier data entry and built an AI-assisted ordering system.</p>
+                            <div className="entry__head">
+                                <p><Link href="https://asakana.co/" target="_blank" rel="noreferrer" className="link job__org">Asakana (YC F26)</Link></p>
+                                <p className="job__when">Oct 2025–Feb 2026</p>
+                            </div>
+                            <p className="job__role">Product Development Intern</p>
+                            <p className="job__what">Automated supplier data entry and built an AI-assisted ordering system.</p>
                         </div>
                         <div className="entry">
-                            <p>Research Intern at <Link href="/resume" className="link">Rare AI Lab, UC San Diego</Link></p>
-                            <p className="muted">Sep. 2024 – Dec. 2025</p>
+                            <div className="entry__head">
+                                <p><Link href="/resume" className="link job__org">Rare AI Lab, UC San Diego</Link></p>
+                                <p className="job__when">Sep 2024–Dec 2025</p>
+                            </div>
+                            <p className="job__role">Research Intern</p>
+                            <p className="job__what">Built surrogate models that cut detector-simulation cost by 90%, and co-first-authored a NeurIPS 2025 workshop paper.</p>
                         </div>
                     </div>
                 </section>
@@ -439,6 +579,8 @@ export default function ChatHome() {
                         const tail = !next || next.role !== row.role;
                         const startOfGroup = i === 0 || rows[i - 1].role !== row.role;
                         const msg = messages.find((m) => `m${m.id}` === row.key);
+                        // rich link cards appear once the message has finished streaming in
+                        const cards = row.role === 'assistant' && msg && revealed[msg.id] === undefined ? [...new Set(msg.content.match(URL_RE) ?? [])].filter((u) => !isOwnSite(u)).slice(0, 2) : [];
                         return (
                             <div key={row.key} className="chat__row" data-role={row.role} data-start={startOfGroup}>
                                 {row.role === 'assistant' && (
@@ -451,7 +593,10 @@ export default function ChatHome() {
                                 ) : row.placeholder ? (
                                     <div className="bubble bubble--assistant" style={{ visibility: 'hidden' }}>&nbsp;</div>
                                 ) : (
-                                    <div className={`bubble bubble--${row.role}`} data-tail={tail}>{row.text}</div>
+                                    <div className="chat__stack" data-role={row.role}>
+                                        <div className={`bubble bubble--${row.role}`} data-tail={tail && !(row.role === 'assistant' && cards.length)}>{linkify(row.text ?? '', recruiter ? leaveTo : undefined)}</div>
+                                        {cards.map((u) => <LinkCard key={u} url={u} />)}
+                                    </div>
                                 )}
                                 {row.role === 'user' && <div className="chat__receipt" data-visible={msg?.id === lastUserId && (busy || answered)}>{busy ? 'delivered' : 'read'}</div>}
                             </div>
@@ -460,10 +605,10 @@ export default function ChatHome() {
                 </div>
 
                 <div className="chat__composer">
-                    {!hasUserMessage && messages.length >= GREETING.length && !talking && <Suggestions items={SUGGESTIONS} onPick={(s) => void send(s)} />}
+                    {!hasUserMessage && messages.length >= greetingLines.length && !talking && <Suggestions items={SUGGESTIONS} onPick={(s) => void send(s)} />}
                     {limitReached ? (
                         <div className="chat__limit">
-                            <p>that&apos;s the {MAX_USER_MESSAGES}-message limit for this chat!</p>
+                            <p>this chat has wrapped up</p>
                             <button type="button" onClick={() => void resetChat()}>start a new chat</button>
                         </div>
                     ) : (

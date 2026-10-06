@@ -8,7 +8,10 @@ const TRANSITION_MS = 700; // keep in sync with the color transition in globals.
 // A phrase that takes on its color when hovered, stays colored for 5 seconds, then fades back.
 // While its color is mid-transition (in either direction) hovering won't re-trigger it (handled in light()).
 // The themed emoji cursor is pure CSS (:hover), so it shows the instant the mouse is over the phrase, even mid-transition.
-export default function Hl({ className, children }: { className: string; children: ReactNode }) {
+export const emojiCursor = (emoji: string) =>
+    `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text x='3' y='26' font-size='24'>${emoji}</text></svg>`)}") 16 16, pointer`;
+
+export default function Hl({ className, emoji, children }: { className: string; emoji?: string; children: ReactNode }) {
     const [lit, setLit] = useState(false);
     const [busy, setBusy] = useState(false);
     const holdTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -41,6 +44,7 @@ export default function Hl({ className, children }: { className: string; childre
             className={`hl ${className}`}
             data-lit={lit}
             data-busy={busy}
+            style={emoji ? ({ '--hl-cursor': emojiCursor(emoji) } as React.CSSProperties) : undefined}
             onPointerEnter={light}
             onTransitionEnd={(e) => {
                 if (e.propertyName !== 'color') return;

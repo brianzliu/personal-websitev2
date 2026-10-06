@@ -1,4 +1,4 @@
-import rawIndex from '../../knowledge/index.json';
+import rawIndex from '../../soul/index.json';
 import { embed, hasApiKey } from './openrouter';
 
 type Chunk = { id: string; source: string; heading: string; text: string; embedding?: number[] };

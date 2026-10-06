@@ -40,3 +40,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 !.env.example
+
+# personal soul files for the chatbot: kept out of the public repo, set as SOUL_MD / STYLE_MD env vars on Vercel
+/soul/SOUL.md
+/soul/STYLE.md
+/soul/MEMORY.md
+/soul/examples/
+
+# misc local files
+/.nexhacks/
+/Brian_Zhou_Liu_Resume.pdf

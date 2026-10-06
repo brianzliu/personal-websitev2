@@ -1,10 +1,11 @@
-// Builds knowledge/index.json from the markdown files in knowledge/.
+// Builds soul/index.json from the markdown files in soul/data/ (files starting with _ are skipped).
 // Each "## section" becomes one retrievable chunk. If OPENROUTER_API_KEY is set, chunks also get embeddings;
 // otherwise the chat falls back to keyword search. Run with: bun run knowledge:build
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const DIR = join(process.cwd(), 'knowledge');
+const DIR = join(process.cwd(), 'soul');
+const DATA = join(DIR, 'data');
 const OUT = join(DIR, 'index.json');
 const MODEL = process.env.OPENROUTER_EMBEDDING_MODEL ?? 'voyageai/voyage-4-lite';
 
@@ -13,8 +14,8 @@ type Chunk = { id: string; source: string; heading: string; text: string; embedd
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
 const chunks: Chunk[] = [];
-for (const file of readdirSync(DIR).filter((f) => f.endsWith('.md')).sort()) {
-    const raw = readFileSync(join(DIR, file), 'utf8');
+for (const file of readdirSync(DATA).filter((f) => f.endsWith('.md') && !f.startsWith('_')).sort()) {
+    const raw = readFileSync(join(DATA, file), 'utf8');
     const title = raw.match(/^# (.+)$/m)?.[1] ?? file;
     for (const section of raw.split(/^## /m).slice(1)) {
         const [headingLine, ...rest] = section.split('\n');
