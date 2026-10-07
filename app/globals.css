@@ -9,6 +9,7 @@
   --rule: #e8e8e8;
   --column: 40rem;
   --page-pad: clamp(1.5rem, 5vh, 3rem);
+  --mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
   --hl-yellow: #ffe97a;
   --hl-blue: #bfdcff;
   --hl-green: #c6efce;
@@ -269,10 +270,9 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 /* very narrow screens: the heading fills the width, so the photo and label sit above it instead of beside it */
 @media (max-width: 28rem) {
   .intro__title { width: 100%; }
-  .home__content { padding-top: calc(var(--page-pad) + 4.4rem); }
-  /* the serif headline fills the width, so the photo sits fully above it instead of overlapping the end */
-  .avatar[data-mode="home"], .avatar-slot { top: -4.9rem; left: auto; right: 0; transform: none; }
-  .chat-label { top: -2.6rem; left: auto; right: calc(4.5rem + 0.8rem); transform: none; font-size: 0.95rem; }
+  .home__content { padding-top: calc(var(--page-pad) + 2.6rem); }
+  .avatar[data-mode="home"], .avatar-slot { top: -2.9rem; left: auto; right: 0; transform: none; }
+  .chat-label { top: -1.6rem; left: auto; right: calc(4.5rem + 0.8rem); transform: none; font-size: 0.95rem; }
   .chat-label::before { content: none; }
 }
 
@@ -616,27 +616,15 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 .pd__how-icon { flex: none; }
 
 /* ---------- type pairing ---------- */
-/* Libron for headings (page and section titles, and the titles of cards, panels and papers);
-   Helvetica Neue stays on everything small. The font variable lives on <body>, so reference it directly. */
-.page h1, .home h1, .page h2, .home h2, .card__name, .tl-panel__name, .paper__title, .hk__event {
-  font-family: var(--font-libron), Georgia, serif; font-weight: 400; letter-spacing: -0.005em;
+/* mono: dates and tools, the "data" in the page */
+.job__when, .card__date, .hk__date, .tl__axis span, .pd__chip, .tl__label, .stamp {
+  font-family: var(--mono); letter-spacing: -0.01em;
 }
-.page h1, .home h1 { letter-spacing: -0.015em; }
-.page h2, .home h2 { font-size: 1.3rem; }
-.card__name { font-size: 1.06rem; }
-.tl-panel__name { font-size: 1.25rem; }
-.paper__title { font-size: 1.22rem; line-height: 1.3; }
-.hk__event { font-size: 1.04rem; }
-/* small text: Helvetica with even figures */
-.job__when, .card__date, .hk__date, .tl__axis span, .pd__chip, .tl__label { font-variant-numeric: tabular-nums; }
-.job__when { font-size: 0.85rem; }
-.card__date { font-size: 0.78rem; }
-.hk__date { font-size: 0.8rem; }
-.tl__axis span { font-size: 0.75rem; }
-.tl__label { font-size: 0.78rem; }
-.tl__dot .tl__label { font-size: 0.74rem; }
-.pd__chip { font-size: 0.76rem; }
-@media (max-width: 40rem) { .tl__lane-label { font-size: 0.9rem; } .tl__label, .tl__dot .tl__label { font-size: 0.68rem; } }
+.job__when, .card__date, .hk__date { font-size: 0.76rem; }
+.tl__axis span { font-size: 0.7rem; }
+.tl__label { font-size: 0.72rem; }
+.pd__chip { font-size: 0.72rem; }
+@media (max-width: 40rem) { .tl__lane-label { font-size: 0.9rem; } .tl__label { font-size: 0.64rem; } }
 
 
 
@@ -661,11 +649,4 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 .mark svg { flex: none; }
 .pd__how-icon { display: inline-flex; padding-top: 0.2rem; }
 .tl__bar, .tl__dot, .card__head, .hk__row { cursor: pointer; }
-
-
-
-
-
-
-
 

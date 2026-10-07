@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import HelveticaNeue from "next/font/local"
+import { IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "./Navbar";
 import DitherDivider from "./components/DitherDivider";
@@ -22,15 +23,8 @@ const helvetica_neue = HelveticaNeue({
   variable: '--font-helvetica-neue'
 })
 
-// Libron (OFL, github.com/nicoverbruggen/libron): a calm book serif next to Helvetica Neue, for dates, years and tech
-const libron = HelveticaNeue({
-  src: [
-    { path: '../public/fonts/libron/Libron-Regular.woff2', weight: '400', style: 'normal' },
-    { path: '../public/fonts/libron/Libron-Italic.woff2', weight: '400', style: 'italic' },
-    { path: '../public/fonts/libron/Libron-Bold.woff2', weight: '700', style: 'normal' },
-  ],
-  variable: '--font-libron',
-});
+// A quiet mono next to Helvetica Neue, for dates and tech
+const mono = IBM_Plex_Mono({ weight: ["400", "500"], style: ["normal", "italic"], subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   title: "Brian Liu",
@@ -47,7 +41,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${helvetica_neue.variable} ${libron.variable} antialiased`}>
+      <body className={`${helvetica_neue.variable} ${mono.variable} antialiased`}>
         <div className="site">
           <Navbar />
           <DitherDivider />
