@@ -9,7 +9,6 @@
   --rule: #e8e8e8;
   --column: 40rem;
   --page-pad: clamp(1.5rem, 5vh, 3rem);
-  --mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
   --hl-yellow: #ffe97a;
   --hl-blue: #bfdcff;
   --hl-green: #c6efce;
@@ -616,15 +615,16 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 .pd__how-icon { flex: none; }
 
 /* ---------- type pairing ---------- */
-/* mono: dates and tools, the "data" in the page */
+/* Libron: dates, years and tools, set a touch larger since a serif reads smaller than Helvetica at the same size */
 .job__when, .card__date, .hk__date, .tl__axis span, .pd__chip, .tl__label, .stamp {
-  font-family: var(--mono); letter-spacing: -0.01em;
+  font-family: var(--font-libron), Georgia, serif; letter-spacing: 0.005em; font-variant-numeric: lining-nums; /* the variable lives on <body>, so reference it here, not via :root */
 }
-.job__when, .card__date, .hk__date { font-size: 0.76rem; }
-.tl__axis span { font-size: 0.7rem; }
-.tl__label { font-size: 0.72rem; }
-.pd__chip { font-size: 0.72rem; }
-@media (max-width: 40rem) { .tl__lane-label { font-size: 0.9rem; } .tl__label { font-size: 0.64rem; } }
+.job__when, .card__date, .hk__date { font-size: 0.86rem; }
+.tl__axis span { font-size: 0.8rem; }
+.tl__label { font-size: 0.82rem; }
+.tl__dot .tl__label { font-size: 0.8rem; }
+.pd__chip { font-size: 0.8rem; }
+@media (max-width: 40rem) { .tl__lane-label { font-size: 0.9rem; } .tl__label, .tl__dot .tl__label { font-size: 0.72rem; } }
 
 
 
@@ -649,4 +649,7 @@ body:has(.home[data-phase="leaving"], .home[data-phase="chat"]) .site { height: 
 .mark svg { flex: none; }
 .pd__how-icon { display: inline-flex; padding-top: 0.2rem; }
 .tl__bar, .tl__dot, .card__head, .hk__row { cursor: pointer; }
+
+
+
 
